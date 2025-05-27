@@ -79,7 +79,6 @@ NodoL* crearNodoL(NodoL* cab, void* dato){
     np->dato=dato;
     np->sig=cab;
     return np;
-
 }
 
 void crearPila(NodoL** stack){
@@ -148,7 +147,7 @@ int IsFunction(char *exp, int *i){
             (exp[*i]=='a' && exp[*i+1]=='r' && exp[*i+2]=='c' && exp[*i+3]=='c' && exp[*i+4]=='s' && exp[*i+5]=='c') 
             ){
         return 3;//Funcion trigonometrica
-} else {
+    } else {
         return 0;//No es funcion
     }
 }
@@ -366,10 +365,11 @@ NodoArb* Derivador(NodoArb* fun){
         nvo[0]=crearNodoArb(nvo[3], nvo[1], fun->dato);
     } else if(((char*)fun->dato)[0]=='^'){
         if(!IsDigito(((char*)(fun->izq)->dato)[0]) && IsDigito(((char*)(fun->der)->dato)[0])){
-            nvo=(NodoArb**)malloc(4*sizeof(NodoArb*));
-            nvo[3]=crearNodoArb(NULL, NULL, crearchar(uno));
-            nvo[2]=crearNodoArb(fun->der, nvo[3], crearchar(dif));
-            nvo[1]=crearNodoArb(fun->izq, nvo[2], crearchar(expo));
+            nvo=(NodoArb**)malloc(5*sizeof(NodoArb*));
+            nvo[4]=crearNodoArb(NULL, NULL, crearchar(uno));
+            nvo[3]=crearNodoArb(fun->der, nvo[4], crearchar(dif));
+            nvo[2]=crearNodoArb(fun->izq, nvo[3], crearchar(expo));
+            nvo[1]=crearNodoArb(nvo[2], Derivador(fun->izq), crearchar(prod));
             nvo[0]=crearNodoArb(fun->der, nvo[1], crearchar(prod));
         } else if(IsDigito(((char*)(fun->izq)->dato)[0]) && !IsDigito(((char*)(fun->der)->dato)[0])){
             nvo=(NodoArb**)malloc(4*sizeof(NodoArb*));
@@ -378,17 +378,27 @@ NodoArb* Derivador(NodoArb* fun){
             nvo[1]=crearNodoArb(nvo[3], nvo[2], crearchar(prod));
             nvo[0]=crearNodoArb(nvo[1], Derivador(fun->der), crearchar(prod));
         } else if(!IsDigito(((char*)(fun->izq)->dato)[0]) && !IsDigito(((char*)(fun->der)->dato)[0])){
-        nvo=(NodoArb**)malloc(10*sizeof(NodoArb*));
-        nvo[9]=crearNodoArb(NULL, NULL, crearchar(uno));
-        nvo[8]=crearNodoArb(fun->der, nvo[9], crearchar(dif));
-        nvo[7]=crearNodoArb(fun->izq, nvo[8], crearchar(expo));
-        nvo[6]=crearNodoArb(fun->der, nvo[7], crearchar(prod));
-        nvo[5]=crearNodoArb(nvo[6], Derivador(fun->izq), crearchar(prod));
-        nvo[4]=crearNodoArb(fun->izq, fun->der, crearchar(expo));
-        nvo[3]=crearNodoArb(fun->izq, NULL, ln);
-        nvo[2]=crearNodoArb(nvo[4],nvo[3], crearchar(prod));
-        nvo[1]=crearNodoArb(nvo[2], Derivador(fun->der), crearchar(prod));
-        nvo[0]=crearNodoArb(nvo[5], nvo[1], crearchar(sum));
+            if(((char*)(fun->der)->dato)[0]=='/' && IsDigito(((char*)((fun->der)->izq)->dato)[0]) && IsDigito(((char*)((fun->der)->der)->dato)[0])){
+                nvo=(NodoArb**)malloc(6*sizeof(NodoArb*));
+                nvo[5]=crearNodoArb((fun->der)->der, (fun->der)->izq, crearchar(dif));
+                nvo[4]=crearNodoArb(nvo[5], (fun->der)->der, crearchar(divi));
+                nvo[3]=crearNodoArb(fun->izq, nvo[4], crearchar(expo));
+                nvo[2]=crearNodoArb((fun->der)->der, nvo[3], crearchar(prod));
+                nvo[1]=crearNodoArb((fun->der)->izq, Derivador(fun->izq), crearchar(prod));
+                nvo[0]=crearNodoArb(nvo[1], nvo[2], crearchar(divi));
+            } else {
+                nvo=(NodoArb**)malloc(10*sizeof(NodoArb*));
+                nvo[9]=crearNodoArb(NULL, NULL, crearchar(uno));
+                nvo[8]=crearNodoArb(fun->der, nvo[9], crearchar(dif));
+                nvo[7]=crearNodoArb(fun->izq, nvo[8], crearchar(expo));
+                nvo[6]=crearNodoArb(fun->der, nvo[7], crearchar(prod));
+                nvo[5]=crearNodoArb(nvo[6], Derivador(fun->izq), crearchar(prod));
+                nvo[4]=crearNodoArb(fun->izq, fun->der, crearchar(expo));
+                nvo[3]=crearNodoArb(fun->izq, NULL, ln);
+                nvo[2]=crearNodoArb(nvo[4],nvo[3], crearchar(prod));
+                nvo[1]=crearNodoArb(nvo[2], Derivador(fun->der), crearchar(prod));
+                nvo[0]=crearNodoArb(nvo[5], nvo[1], crearchar(sum));
+            }
         }
     } else if(((char*)fun->dato)[0]=='s' && ((char*)fun->dato)[1]=='e' && ((char*)fun->dato)[2]=='n'){
         nvo=(NodoArb**)malloc(2*sizeof(NodoArb*));
@@ -487,10 +497,8 @@ NodoArb* Derivador(NodoArb* fun){
         nvo[1]=crearNodoArb(NULL, NULL, crearchar(cero));
         nvo[0]=crearNodoArb(nvo[1], nvo[2], crearchar(dif));
     } else if(((char*)fun->dato)[0]=='l' && ((char*)fun->dato)[1]=='n'){
-        nvo=(NodoArb**)malloc(3*sizeof(NodoArb*));
-        nvo[2]=crearNodoArb(NULL, NULL, crearchar(uno));
-        nvo[1]=crearNodoArb(nvo[2], fun->izq, crearchar(divi));
-        nvo[0]=crearNodoArb(nvo[1], Derivador(fun->izq), crearchar(prod));
+        nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
+        nvo[0]=crearNodoArb(Derivador(fun->izq), fun->izq, crearchar(divi));
     }
     return nvo[0];
 }
@@ -630,7 +638,6 @@ NodoL* Infija(char* exp){
                 }
                 out->op=exp[ind];
             }
-            //printf("\n[%s]", out->exp);
             p1=push(&p1, out);
         }
         ind++;
@@ -660,11 +667,11 @@ int main(){
     scanf("%[^\n]", expinc);
     
     exp1=NLCAD(PostFijo(expinc));
-    printf("Notacion postfija: %s\n", exp1);
+    //printf("Notacion postfija: %s\n", exp1);
     
     exp2=BuildArb(exp1);
-    printf("Recorrido del arbol en postorden:");
-    imprimeArb(exp2, &impCad);
+    //printf("Recorrido del arbol en postorden:");
+    //imprimeArb(exp2, &impCad);
     
     ARBNL(Derivador(exp2), &p);
     res=NLCAD(p);

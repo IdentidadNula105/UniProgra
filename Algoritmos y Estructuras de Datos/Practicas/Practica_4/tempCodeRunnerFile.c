@@ -1,9 +1,10 @@
-exp2=BuildArb(exp1);
-    printf("Recorrido del arbol en postorden:");
-    imprimeArb(exp2, &impCad);
-    
-    ARBNL(Derivador(exp2), &p);
-    res=NLCAD(p);
-    printf("\nLa derivada es: ");
-    //imprimeArb(Derivador(exp2), &impCad);
-    printf("%s", ((Expifj*)Infija(res)->dato)->exp);
+    nvo[9]=crearNodoArb(NULL, NULL, crearchar(uno));
+                nvo[8]=crearNodoArb(fun->der, nvo[9], crearchar(dif));
+                nvo[7]=crearNodoArb(fun->izq, nvo[8], crearchar(expo));
+                nvo[6]=crearNodoArb(fun->der, nvo[7], crearchar(prod));
+                nvo[5]=crearNodoArb(nvo[6], Derivador(fun->izq), crearchar(prod));
+                nvo[4]=crearNodoArb(fun->izq, fun->der, crearchar(expo));
+                nvo[3]=crearNodoArb(fun->izq, NULL, ln);
+                nvo[2]=crearNodoArb(nvo[4],nvo[3], crearchar(prod));
+                nvo[1]=crearNodoArb(nvo[2], Derivador(fun->der), crearchar(prod));
+                nvo[0]=crearNodoArb(nvo[5], nvo[1], crearchar(sum));
