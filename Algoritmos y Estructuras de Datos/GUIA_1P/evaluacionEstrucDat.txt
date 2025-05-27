@@ -1,0 +1,28 @@
+Evaluacion de Estructura de datos
+
+1er y 2o departamental
+50% examenes
+40% practicas
+10% tareas
+
+3er departamental
+40% examen
+50% proyecto equipo (maximo 4 personas)
+10% tareas
+
+
+tareas y reportes de practicas (individuales para entregar impresos)
+Portada 
+  nombre
+  tema
+  numero
+  fecha
+  grupo
+  materia
+
+Bibliografia
+Niklaus Wirth
+Algoritmos y Estructuras de datos
+Prentice-Hall (1986)
+
+
