@@ -673,4 +673,4 @@ int main(){
     printf("%s", ((Expifj*)Infija(res)->dato)->exp);
     
     return 0;
-}//LOLXD
+}
