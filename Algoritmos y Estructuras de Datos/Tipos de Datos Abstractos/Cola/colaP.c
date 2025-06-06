@@ -4,99 +4,103 @@ Una cola de prioridad es aquella en donde los elementos son atendidos no solamen
 por ser los primeros en llegar, si no también por su nivel de prioridad.
 Dicha prioridad depende del problema, como en este caso, la prioridad es binaria, 
 es decir, los elementos que sean de tipo 1/noble son atendidos primero, despues
-los catalogados por 0/plebeyos.
+los catalogados por 0/plebeyo.
 */
 #include <stdio.h>
 #include <stdlib.h>
-#define MAX 100
 
-typedef struct estamento{
-    int dato;
-    int tipo;//0=plebeyo, 1=noble
-} Estamento;
+typedef struct nodol{
+    void *dato;//Costumbre, para uso general
+    int estamento;// 1/noble, 0/plebeyo
+    struct nodol* sig;
+} NodoL;
 
-typedef struct ColaM{
-    Estamento* a[MAX];
-    int tam;
-} ColaMed;
+typedef struct cola{
+    NodoL* fren;
+    NodoL* fin;
+} ColaM;
 
-ColaMed *crearCM(){
-    ColaMed* nvo;
-    nvo=(ColaMed*)malloc(sizeof(ColaMed));
-    nvo->tam=0;
-    return nvo;
+ColaM* crearColaM(){
+    ColaM* cm;
+    cm=(ColaM*)malloc(sizeof(ColaM));
+    cm->fren=NULL;
+    cm->fin=NULL;
+    return cm;
 }
 
-void agregarElet(ColaMed *colm, Estamento* ele){
-    int i;
-    if(!colm->tam){
-        colm->a[colm->tam]= ele;
-    } else if(colm->tam==MAX+1){
-        return;//cola LLENA
-    } else {
-        if(colm->a[colm->tam-1]->tipo==ele->tipo || !ele->tipo) colm->a[colm->tam]=ele;
-        else {
-            for(i=colm->tam-1; i>0 && colm->a[i-1]->tipo!=1; i--);//encontrar el indice del ultimo noble
-            for(int j=colm->tam-1; j>=i; j--) colm->a[j+1]=colm->a[j];//Mover un lugar todos los plebeyos
-            colm->a[i]=ele;
-        }
-    }
-    colm->tam++;
-}
-
-int consultarcola(ColaMed *colm){
-    if(!colm->tam) return 0;
-    return colm->a[0]->dato;
-}
-
-int eliminarcola(ColaMed *colm){
-    Estamento *aux;
-    aux=colm->a[0];
-    for(int i=0; i<colm->tam-1; i++) colm->a[i]=colm->a[i+1];
-    colm->tam--;
-    return aux->dato;
-}
-
-int numPlebeyos(ColaMed *colm){
-    int contp=0;
-    for(int i=0; i<colm->tam; i++) if(colm->a[i]->tipo==0) contp++;
-    return contp;
-}
-
-int numNobles(ColaMed *colm){
-    int contn=0;
-    for(int i=0; i<colm->tam; i++) if(colm->a[i]->tipo==1) contn++;
-    return contn;
-}
-
-int ColaVacia(ColaMed *colm){
-    if(!colm->tam) return 1;
+int IsEmptyC(ColaM* cm){
+    if(!cm->fren) return 1;
     return 0;
 }
 
-void impColat(ColaMed *colm){
-    for(int i=0; i<colm->tam; i++) printf("(%d)", colm->a[i]->dato);
+void Encolar(ColaM* cm, void* dato, int est){
+    NodoL* newn=malloc(sizeof(NodoL));
+    newn->dato=dato;
+    newn->estamento=est;
+    newn->sig=NULL;
+    if(!cm->fren)
+        cm->fren=newn;
+        else
+        cm->fin->sig=newn;
+    cm->fin=newn;
+}
+
+void *Desencolar(ColaM* cm){
+    if(!cm->fren) return (void*)NULL;
+    NodoL *p=cm->fren, *aux;
+    void *dat;
+    while(p->sig && p->sig->estamento!=1) p=p->sig;
+    if(!p->sig){
+        aux=cm->fren;
+        dat=aux->dato;
+        cm->fren=aux->sig;
+    } else {
+        aux=p->sig;
+        dat=aux->dato;
+        p->sig=aux->sig;
+    }
+    free(aux);
+    return dat;
+}
+
+void *consultarprimCM(ColaM *cm){
+    if(!cm->fren) return (void*)NULL;
+    NodoL* p=cm->fren;
+    while(p->sig && p->estamento!=1) p=p->sig;
+    if(p->estamento==1) 
+        return p->dato;
+        else
+        return cm->fren->dato;
+}
+
+int numPleb(ColaM* cm){
+    int cnp=0;
+    for(NodoL* p=cm->fren; p; p=p->sig) if(p->estamento==0) cnp++;
+    return cnp;
+}
+
+int numNobl(ColaM* cm){
+    int cnn=0;
+    for(NodoL* p=cm->fren; p; p=p->sig) if(p->estamento==1) cnn++;
+    return cnn;
+}
+
+void impLD(ColaM *dq){
+    for(NodoL *p=dq->fren;p;p=p->sig) printf("(%d)", *(int*)p->dato);
 }
 
 int main(){
-    ColaMed *xd;
-    Estamento lol[4];
-    int h=0;
-    lol[0].dato=3;
-    lol[0].tipo=1;
-    lol[1].dato=4;
-    lol[1].tipo=1;
-    lol[2].dato=1;
-    lol[2].tipo=0;
-    lol[3].dato=5;
-    lol[3].tipo=0;
-    xd=crearCM();
-
-    agregarElet(xd, &lol[3]);// Plebeyo
-    agregarElet(xd, &lol[1]);// Noble
-    agregarElet(xd, &lol[0]);// Noble
-    agregarElet(xd, &lol[2]);// Plebeyo
-    impColat(xd);//4 3 5 1
-    printf("\nPrimer elmento: %d", consultarcola(xd));
-    //impColat(xd);//3 1
+    ColaM *cm;
+    int a=1, b=2, c=3, d=4, e=5;
+    cm=crearColaM();
+    Encolar(cm, &a, 0);
+    Encolar(cm, &b, 0);
+    Encolar(cm, &c, 0);
+    Encolar(cm, &d, 0);
+    Encolar(cm, &e, 1);
+    impLD(cm);
+    Desencolar(cm);
+    printf("\nN: %d", numNobl(cm));
+    impLD(cm);
+    return 0;
 }

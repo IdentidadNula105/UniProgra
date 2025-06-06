@@ -16,100 +16,104 @@ typedef struct nodoLD{
     struct nodoLD *ant;
 } NodoLD;
 
+typedef struct deque{
+    NodoLD *fren;
+    NodoLD *fin;
+} Deque;
+
 NodoLD* crearNLD(void *dato){
     NodoLD *nvo;
     nvo=(NodoLD*)malloc(sizeof(NodoLD));
     nvo->dato=dato;
-    nvo->ant=NULL;
-    nvo->sig=NULL;
+    nvo->ant=nvo->sig=NULL;
     return nvo;
 }
 
-void inicCola(NodoLD** cola){
-    *cola=NULL;
+Deque *crearDeque(){
+    Deque *dqnv=(Deque*)malloc(sizeof(Deque));
+    dqnv->fren=dqnv->fin=(NodoLD*)NULL;
+    return dqnv;
 }
 
-void InsertarIncioC(NodoLD **cola, void *dato){
-    NodoLD *nvo;
-    nvo=crearNLD(dato);
-    if(*cola){
-        nvo->sig=*cola;
-        (*cola)->ant=nvo;
-    } 
-    *cola=nvo;
-}
-
-void InsertarFinalC(NodoLD **cola, void *dato){
-    NodoLD *nvo, *p;
-    nvo=crearNLD(dato);
-    if(!*cola) *cola=nvo;
-    p=*cola;
-    while(p->sig) p=p->sig;
-    nvo->ant=p;
-    p->sig=nvo;
-}
-
-void* EliminarFinalC(NodoLD** cola){
-    if(!*cola){
-        printf("LISTA VACIA");
-        return NULL;
-    }    
-    NodoLD *p=*cola, *q=NULL;
-    while(p->sig) p=p->sig;
-    void *dato=p->dato;
-    if(!p->ant){
-        *cola=NULL;
+void InsertIncioD(Deque *dq, void *dato){
+    NodoLD* ndnv=crearNLD(dato);
+    if(!dq->fren){
+        dq->fin=ndnv;
     } else {
-        q=p->ant;
-        q->sig=NULL;
-        p->ant=NULL;
+        dq->fren->ant=ndnv;
+        ndnv->sig=dq->fren;
     }
-    return dato;
+    dq->fren=ndnv;
 }
 
-void* EliminarInicioC(NodoLD **cola){
-    if(!*cola){
-        printf("LISTA INV");
-        return NULL;
-    }
-    void *dato=(*cola)->dato;
-    if(!(*cola)->sig){
-        *cola=NULL;
+void InsertFinalD(Deque *dq, void *dato){
+    NodoLD* ndnv=crearNLD(dato);
+    if(!dq->fren){
+        dq->fren=ndnv;
     } else {
-        NodoLD* p=(*cola)->sig;
-        p->ant=NULL;
-        (*cola)->sig=NULL;
-        *cola=p;
+        dq->fin->sig=ndnv;
+        ndnv->ant=dq->fin;
     }
-    return dato;
+    dq->fin=ndnv;
 }
 
-void* MostrarInicio(NodoLD* cola){
-    return cola->dato;
+void* EliminarFinalD(Deque *dq){
+    if(!dq->fren) return (void*)NULL;
+    NodoLD *aux;
+    void *dat=dq->fin->dato;
+    if(dq->fren==dq->fin){
+        free(dq->fin);
+        dq->fren=dq->fin=NULL;
+    } else {
+        aux=dq->fin->ant;
+        aux->sig=NULL;
+        free(dq->fin);
+        dq->fin=aux;
+    }
+    return dat;
 }
 
-void* MostrarFinal(NodoLD* cola){
-    NodoLD* p=cola;
-    while(p->sig)p=p->sig;
-    return p->dato;
+void* EliminarInicioD(Deque *dq){
+    if(!dq->fren) return (void*)NULL;
+    NodoLD *aux;
+    void *dat=dq->fren->dato;
+    if(dq->fren==dq->fin){
+        free(dq->fren);
+        dq->fren=dq->fin=NULL;
+    } else {
+        aux=dq->fren->sig;
+        aux->ant=NULL;
+        free(dq->fren);
+        dq->fren=aux;
+    }
+    return dat;
 }
 
-void impLD(NodoLD *ld){
-    if(!ld) return;
-    printf("\n(%d)", *(int*)ld->dato);//CAMBIAR SI ES NECESARIO
-    impLD(ld->sig);
+void* MostrarInicio(Deque* dq){
+    if(!dq->fren) return (void*)NULL;
+    return dq->fren->dato;
+}
+
+void* MostrarFinal(Deque* dq){
+    if(!dq->fren) return (void*)NULL;
+    return dq->fin->dato;
+}
+
+void impLD(Deque *dq){
+    for(NodoLD *p=dq->fren;p;p=p->sig) printf("(%d)", *(int*)p->dato);
 }
 
 int main(){
-    NodoLD* ld1=NULL;
-    int a[10];
-    for(int i=0;i<10; i++) a[i]=i+1;
-    InsertarIncioC(&ld1, &a[0]);
-    InsertarIncioC(&ld1, &a[1]);
-    InsertarFinalC(&ld1, &a[2]);
-    InsertarFinalC(&ld1, &a[3]);
-    impLD(ld1);
-    printf("\n");
-    printf("\n%d", *(int*)MostrarFinal(ld1));
-    impLD(ld1);
+    int a=1, b=2, c=3, d=4;
+    Deque *dq1;
+    int h;
+    dq1=crearDeque();
+    InsertIncioD(dq1, &a);
+    InsertIncioD(dq1, &b);
+    InsertFinalD(dq1, &c);
+    InsertFinalD(dq1, &d);
+    h=*(int*)EliminarFinalD(dq1);
+    //printf("(%d)", *(int*)EliminarFinalD(dq1));
+    impLD(dq1);
+    return 0;
 }

@@ -340,7 +340,6 @@ NodoArb* BuildArb(char* s){
 
 NodoArb* Derivador(NodoArb* fun){
     NodoArb** nvo;
-    //printf("%s", (char*)fun->dato);
     if(((char*)fun->dato)[0]=='x'){
         nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
         nvo[0]=crearNodoArb(NULL, NULL, crearchar(uno));
@@ -528,6 +527,7 @@ NodoL* Infija(char* exp){
                     for(int i=3, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
                     ind=ind+1;
                 } else if(IsFunction(exp, &ind)==2){
+                    //Trigonometrica
                     tamt=tamt+3;
                     out->exp=(char*)malloc(tamt*sizeof(char));
                     out->exp[0]=exp[ind];
@@ -537,6 +537,7 @@ NodoL* Infija(char* exp){
                     for(int i=4, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
                     ind=ind+2;
                 } else if(IsFunction(exp, &ind)==3){
+                    //arc trigonometrica
                     tamt=tamt+6;
                     out->exp=(char*)malloc(tamt*sizeof(char));
                     out->exp[0]=exp[ind];
@@ -552,11 +553,11 @@ NodoL* Infija(char* exp){
                 out->exp[tamt-2]=')';
                 out->exp[tamt-1]='\0';
                 out->op='N';
-            } else {//Operador
+            } else {
+                //Operador
                 out=(Expifj*)malloc(sizeof(Expifj));
                 el2=(Expifj*)pop(&p1);
                 el1=(Expifj*)pop(&p1);
-                //printf("\n[%s],[%s]",el1->exp, el2->exp);
                 tamt=tamcad(el1->exp, 0)+tamcad(el2->exp, 0)+2;
                 if(el1->op=='N' && el2->op=='N'){
                     out->exp=(char*)malloc(tamt*sizeof(char));
@@ -564,7 +565,6 @@ NodoL* Infija(char* exp){
                     out->exp[tamcad(el1->exp, 0)]=exp[ind];
                     for(int i=tamcad(el1->exp, 0)+1, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
                     out->exp[tamt-1]='\0';
-                    //printf("\n[%s],[%s]",el1->exp, el2->exp);
                 } else if(el1->op!='N' && el2->op=='N'){
                     if(CompOp(el1->op, exp[ind])==-1){
                         out->exp=(char*)malloc((tamt+2)*sizeof(char));
@@ -583,8 +583,6 @@ NodoL* Infija(char* exp){
                     }
                     
                 } else if(el1->op=='N' && el2->op!='N'){
-                    //printf("\n[%c],[%c]",el2->op, exp[ind]);
-                    //printf("\n%d",CompOp(el2->op, exp[ind]));
                     if(CompOp(el2->op, exp[ind])==-1 || (el2->op==exp[ind] && exp[ind]=='-')){
                         out->exp=(char*)malloc((tamt+2)*sizeof(char));
                         for(int i=0; el1->exp[i]!='\0'; i++) out->exp[i]=el1->exp[i];
