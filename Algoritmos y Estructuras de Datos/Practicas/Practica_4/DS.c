@@ -51,6 +51,7 @@ NodoArb* crearNodoArb(NodoArb* izq, NodoArb* der, void* dato){
     return newn; 
 }
 
+/*
 void imprimeArb(NodoArb* r, void(*f)(void*)){
     if(!r) return;
     imprimeArb(r->izq, f);
@@ -58,10 +59,10 @@ void imprimeArb(NodoArb* r, void(*f)(void*)){
     f(r->dato);
     
 }
-
 void impCad(void* dato){
     printf("[%s]", (char*)dato);
 }
+*/
 
 //Pila dinamica
 NodoL* removeN(NodoL**cab){
@@ -85,6 +86,7 @@ void crearPila(NodoL** stack){
     *stack=NULL;
 }
 
+/*
 void imprimeLI(NodoL *cab){//Funcion mia
     if(cab->sig==NULL){
         printf("%c", *(char*)cab->dato);
@@ -93,6 +95,7 @@ void imprimeLI(NodoL *cab){//Funcion mia
     imprimeLI(cab->sig);
     printf("%c", *(char*)cab->dato);    
 }
+*/
 
 int CountL(NodoL* n){
     if(n->sig==NULL) return 1;
@@ -124,7 +127,7 @@ void* pop(NodoL** stack){
 
 //Notacion Postfija
 int IsDigito(char carac){
-    if((carac>47 && carac<58) || carac==69 || carac==101) return 1;
+    if((carac>47 && carac<58) || carac==69 || carac==101) return 1;//numero, e, x
     return 0;
 }
 
@@ -157,7 +160,10 @@ int CompOp(char op1, char op2){
     arr[0]=op1;
     arr[1]=op2;
     for(int i=0; i<2; i++){
-        if(arr[i]=='+'|| arr[i]=='-'){
+        if(arr[i]=='N'){
+            //Los operadores neutros hacen referencia a numeros o funciones, los cuales no necesitan parentesis
+            arr[i]=4;
+        } else if(arr[i]=='+'|| arr[i]=='-'){
             arr[i]=1;
         } else if(arr[i]=='*' || arr[i]=='/'){
             arr[i]=2;
@@ -308,37 +314,38 @@ char* crearchar(char c){
 }
 
 NodoArb* BuildArb(char* s){
-    ind=0;
+    int inda=0;
     NodoArb *izq, *der, *nvo;
     NodoL* p1;
     crearPila(&p1);
-    while(s[ind]){
-        if(s[ind]!=','){
-            nvo=crearNodoArb(NULL, NULL, crearsubcad(s, &ind));
-            if(s[ind]=='+' || s[ind]=='-' || s[ind]=='*' || s[ind]=='/' || s[ind]=='^'){
+    while(s[inda]){
+        if(s[inda]!=','){
+            nvo=crearNodoArb(NULL, NULL, crearsubcad(s, &inda));
+            if(s[inda]=='+' || s[inda]=='-' || s[inda]=='*' || s[inda]=='/' || s[inda]=='^'){
                 der=(NodoArb*)pop(&p1);
                 izq=(NodoArb*)pop(&p1);
                 nvo->der=der;
                 nvo->izq=izq;
-            } else if(IsFunction(s, &ind)){
+            } else if(IsFunction(s, &inda)){
                 izq=(NodoArb*)pop(&p1);
                 nvo->izq=izq;
-                if(IsFunction(s, &ind)==1){
-                    ind++;
-                } else if(IsFunction(s, &ind)==2){
-                    ind=ind+2;
-                } else if(IsFunction(s, &ind)==3){
-                    ind=ind+5;
+                if(IsFunction(s, &inda)==1){
+                    inda++;
+                } else if(IsFunction(s, &inda)==2){
+                    inda=inda+2;
+                } else if(IsFunction(s, &inda)==3){
+                    inda=inda+5;
                 }
             }
             p1=push(&p1, nvo);
         }
-        ind++;
+        inda++;
     }
     return (NodoArb*)(pop(&p1));
 }
 
 NodoArb* Derivador(NodoArb* fun){
+    if(!fun) return (NodoArb*)NULL;
     NodoArb** nvo;
     if(((char*)fun->dato)[0]=='x'){
         nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
@@ -499,146 +506,107 @@ NodoArb* Derivador(NodoArb* fun){
         nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
         nvo[0]=crearNodoArb(Derivador(fun->izq), fun->izq, crearchar(divi));
     }
+    //free(fun);
     return nvo[0];
 }
 
 NodoL* Infija(char* exp){
     NodoL* p1;
     Expifj* out, *el1, *el2;
-    int tamt;
+    int tamt=0;
+    int inda=0;
     crearPila(&p1);
-    ind=0;
-    while(exp[ind]!='\0'){
-        if(exp[ind]!=','){
-            if(IsDigito(exp[ind]) || exp[ind]=='x'){
-                out=(Expifj*)malloc(sizeof(Expifj));
-                out->exp=crearsubcad(exp, &ind);
+    while(exp[inda]!='\0'){
+        if(exp[inda]!=','){
+            out=(Expifj*)malloc(sizeof(Expifj));
+            if(IsDigito(exp[inda]) || exp[inda]=='x'){
+                out->exp=crearsubcad(exp, &inda);
                 out->op='N';
-            } else if(IsFunction(exp, &ind)){
-                out=(Expifj*)malloc(sizeof(Expifj));
-                el1=(Expifj*)pop(&p1);
+            } else if(IsFunction(exp, &inda)){
+                el1=(Expifj*)pop(&p1);//Argumento de la funcion
                 tamt=tamcad(el1->exp, 0)+3;
-                if(IsFunction(exp, &ind)==1){
+                if(IsFunction(exp, &inda)==1){
                     tamt=tamt+2;
                     out->exp=(char*)malloc(tamt*sizeof(char));
                     out->exp[0]='l';
                     out->exp[1]='n';
                     out->exp[2]='(';
                     for(int i=3, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
-                    ind=ind+1;
-                } else if(IsFunction(exp, &ind)==2){
+                    inda=inda+1;
+                } else if(IsFunction(exp, &inda)==2){
                     //Trigonometrica
                     tamt=tamt+3;
                     out->exp=(char*)malloc(tamt*sizeof(char));
-                    out->exp[0]=exp[ind];
-                    out->exp[1]=exp[ind+1];
-                    out->exp[2]=exp[ind+2];
+                    out->exp[0]=exp[inda];
+                    out->exp[1]=exp[inda+1];
+                    out->exp[2]=exp[inda+2];
                     out->exp[3]='(';
                     for(int i=4, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
-                    ind=ind+2;
-                } else if(IsFunction(exp, &ind)==3){
+                    inda=inda+2;
+                } else if(IsFunction(exp, &inda)==3){
                     //arc trigonometrica
                     tamt=tamt+6;
                     out->exp=(char*)malloc(tamt*sizeof(char));
-                    out->exp[0]=exp[ind];
-                    out->exp[1]=exp[ind+1];
-                    out->exp[2]=exp[ind+2];
-                    out->exp[3]=exp[ind+3];
-                    out->exp[4]=exp[ind+4];
-                    out->exp[5]=exp[ind+5];
+                    out->exp[0]=exp[inda];
+                    out->exp[1]=exp[inda+1];
+                    out->exp[2]=exp[inda+2];
+                    out->exp[3]=exp[inda+3];
+                    out->exp[4]=exp[inda+4];
+                    out->exp[5]=exp[inda+5];
                     out->exp[6]='(';
                     for(int i=7, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
-                    ind=ind+5;
+                    inda=inda+5;
                 }
                 out->exp[tamt-2]=')';
                 out->exp[tamt-1]='\0';
                 out->op='N';
             } else {
                 //Operador
-                out=(Expifj*)malloc(sizeof(Expifj));
-                el2=(Expifj*)pop(&p1);
-                el1=(Expifj*)pop(&p1);
+                el2=(Expifj*)pop(&p1);//Operando derecho
+                el1=(Expifj*)pop(&p1);//Operando izquierdo
                 tamt=tamcad(el1->exp, 0)+tamcad(el2->exp, 0)+2;
-                if(el1->op=='N' && el2->op=='N'){
+                if((CompOp(el1->op, exp[inda])==1 && CompOp(el2->op, exp[inda])==-1) || (exp[inda]=='-' && (el2->op=='+' || el2->op=='-'))){
+                    //Cuando el operador de entrada es mayor que el de ele2 o sean iguales a '-'
+                    out->exp=(char*)malloc((tamt+2)*sizeof(char));
+                    for(int i=0; el1->exp[i]!='\0'; i++) out->exp[i]=el1->exp[i];
+                    out->exp[tamcad(el1->exp, 0)]=exp[inda];
+                    out->exp[tamcad(el1->exp, 0)+1]='(';
+                    for(int i=tamcad(el1->exp, 0)+2, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
+                    out->exp[tamt]=')';
+                    out->exp[tamt+1]='\0';
+                } else if(CompOp(el1->op, exp[inda])==-1 && CompOp(el2->op, exp[inda])==-1){
+                    //Los operadores de el1 y el2 son menores al de la entrada
+                    out->exp=(char*)malloc((tamt+4)*sizeof(char));
+                    out->exp[0]='(';
+                    for(int i=1, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
+                    out->exp[tamcad(el1->exp, 0)+1]=')';
+                    out->exp[tamcad(el1->exp, 0)+2]=exp[inda];
+                    out->exp[tamcad(el1->exp, 0)+3]='(';
+                    for(int i=tamcad(el1->exp, 0)+4, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
+                    out->exp[tamt+2]=')';
+                    out->exp[tamt+3]='\0';
+                } else if(CompOp(el1->op, exp[inda])==1 && CompOp(el2->op, exp[inda])==1){
+                    //Cuando el1 y el2 son numeros o funciones (trigo, log, arc)
                     out->exp=(char*)malloc(tamt*sizeof(char));
                     for(int i=0; el1->exp[i]!='\0'; i++) out->exp[i]=el1->exp[i];
-                    out->exp[tamcad(el1->exp, 0)]=exp[ind];
+                    out->exp[tamcad(el1->exp, 0)]=exp[inda];
                     for(int i=tamcad(el1->exp, 0)+1, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
                     out->exp[tamt-1]='\0';
-                } else if(el1->op!='N' && el2->op=='N'){
-                    if(CompOp(el1->op, exp[ind])==-1){
-                        out->exp=(char*)malloc((tamt+2)*sizeof(char));
-                        out->exp[0]='(';
-                        for(int i=1, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
-                        out->exp[tamcad(el1->exp, 0)+1]=')';
-                        out->exp[tamcad(el1->exp, 0)+2]=exp[ind];
-                        for(int i=tamcad(el1->exp, 0)+3, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
-                        out->exp[tamt+1]='\0';
-                    } else {
-                        out->exp=(char*)malloc(tamt*sizeof(char));
-                        for(int i=0; el1->exp[i]!='\0'; i++) out->exp[i]=el1->exp[i];
-                        out->exp[tamcad(el1->exp, 0)]=exp[ind];
-                        for(int i=tamcad(el1->exp, 0)+1, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
-                        out->exp[tamt-1]='\0';
-                    }
-                    
-                } else if(el1->op=='N' && el2->op!='N'){
-                    if(CompOp(el2->op, exp[ind])==-1 || (el2->op==exp[ind] && exp[ind]=='-')){
-                        out->exp=(char*)malloc((tamt+2)*sizeof(char));
-                        for(int i=0; el1->exp[i]!='\0'; i++) out->exp[i]=el1->exp[i];
-                        out->exp[tamcad(el1->exp, 0)]=exp[ind];
-                        out->exp[tamcad(el1->exp, 0)+1]='(';
-                        for(int i=tamcad(el1->exp, 0)+2, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
-                        out->exp[tamt]=')';
-                        out->exp[tamt+1]='\0';
-                    } else {
-                        out->exp=(char*)malloc(tamt*sizeof(char));
-                        for(int i=0; el1->exp[i]!='\0'; i++) out->exp[i]=el1->exp[i];
-                        out->exp[tamcad(el1->exp, 0)]=exp[ind];
-                        for(int i=tamcad(el1->exp, 0)+1, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
-                        out->exp[tamt-1]='\0';
-                    }
-                    
-                } else if(el1->op!='N' && el2->op!='N'){
-                    if(CompOp(el1->op, exp[ind])==-1 && CompOp(el2->op, exp[ind])==-1){
-                        out->exp=(char*)malloc((tamt+4)*sizeof(char));
-                        out->exp[0]='(';
-                        for(int i=1, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
-                        out->exp[tamcad(el1->exp, 0)+1]=')';
-                        out->exp[tamcad(el1->exp, 0)+2]=exp[ind];
-                        out->exp[tamcad(el1->exp, 0)+3]='(';
-                        for(int i=tamcad(el1->exp, 0)+4, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
-                        out->exp[tamt+2]=')';
-                        out->exp[tamt+3]='\0';
-                    } else if((CompOp(el1->op, exp[ind])==1 && CompOp(el2->op, exp[ind])==-1) || (el2->op==exp[ind] && exp[ind]=='-')){
-                        out->exp=(char*)malloc((tamt+2)*sizeof(char));
-                        for(int i=0, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
-                        out->exp[tamcad(el1->exp, 0)]=exp[ind];
-                        out->exp[tamcad(el1->exp, 0)+1]='(';
-                        for(int i=tamcad(el1->exp, 0)+2, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
-                        out->exp[tamt]=')';
-                        out->exp[tamt+1]='\0';
-                    } else if(CompOp(el1->op, exp[ind])==-1 && CompOp(el2->op, exp[ind])==1){
-                        out->exp=(char*)malloc((tamt+2)*sizeof(char));
-                        out->exp[0]='(';
-                        for(int i=1, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
-                        out->exp[tamcad(el1->exp, 0)+1]=')';
-                        out->exp[tamcad(el1->exp, 0)+2]=exp[ind];
-                        for(int i=tamcad(el1->exp, 0)+3, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
-                        out->exp[tamt+1]='\0';
-                    } else if(CompOp(el1->op, exp[ind])==1 && CompOp(el2->op, exp[ind])==1){
-                        out->exp=(char*)malloc(tamt*sizeof(char));
-                        for(int i=0; el1->exp[i]!='\0'; i++) out->exp[i]=el1->exp[i];
-                        out->exp[tamcad(el1->exp, 0)]=exp[ind];
-                        for(int i=tamcad(el1->exp, 0)+1, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
-                        out->exp[tamt-1]='\0';
-                    }
+                } else if(CompOp(el1->op, exp[inda])==-1 && CompOp(el2->op, exp[inda])==1){
+                    //Cuando el operador de entrada es mas grande que el del el1
+                    out->exp=(char*)malloc((tamt+2)*sizeof(char));
+                    out->exp[0]='(';
+                    for(int i=1, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
+                    out->exp[tamcad(el1->exp, 0)+1]=')';
+                    out->exp[tamcad(el1->exp, 0)+2]=exp[inda];
+                    for(int i=tamcad(el1->exp, 0)+3, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
+                    out->exp[tamt+1]='\0';
                 }
-                out->op=exp[ind];
+                out->op=exp[inda];
             }
             p1=push(&p1, out);
         }
-        ind++;
+        inda++;
     }
     return p1;
 }
@@ -656,12 +624,75 @@ void ARBNL(NodoArb* arb, NodoL** p){
     *p=push(p, crearchar(coma));
 }
 
+NodoArb *SimplificarRaiz(NodoArb *fun){
+    if(!fun) return (NodoArb*)NULL;
+    NodoArb **nvo; 
+    if(((char*)fun->dato)[0]=='*' && (((char*)(fun->izq)->dato)[0]=='1' || ((char*)(fun->der)->dato)[0]=='1')){
+        //1*u=u
+        nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
+        if(((char*)(fun->izq)->dato)[0]=='1')
+            *nvo=fun->der;
+        else if(((char*)(fun->der)->dato)[0]=='1')
+            *nvo=fun->izq;
+    } else if((((char*)fun->dato)[0]=='*' || ((char*)fun->dato)[0]=='/') && (((char*)(fun->izq)->dato)[0]=='0' || ((char*)(fun->der)->dato)[0]=='0')){
+        //0*u=0
+        nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
+        *nvo=crearNodoArb(NULL, NULL, crearchar(cero));
+        //Nota: el caso de u/0 entra en este if, sin embargo, esto jamas ocurrira a menos que el usuario ingrese una expresion similar
+    } else if(((char*)fun->dato)[0]=='+' && (((char*)(fun->izq)->dato)[0]=='0' || ((char*)(fun->der)->dato)[0]=='0')){
+        //0+u=u
+        nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
+        if(((char*)(fun->izq)->dato)[0]=='0')
+            *nvo=fun->der;
+        else if(((char*)(fun->der)->dato)[0]=='0')
+            *nvo=fun->izq;
+    } else if(((char*)fun->dato)[0]=='-' && ((char*)(fun->der)->dato)[0]=='0'){
+        //u-0=u
+        nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
+        *nvo=fun->izq;
+    } else if(((char*)fun->dato)[0]=='/' && (((char*)(fun->izq)->dato)[0]=='/' || ((char*)(fun->der)->dato)[0]=='/')){
+        if(((char*)(fun->izq)->dato)[0]=='/' && ((char*)(fun->der)->dato)[0]!='/'){
+            //(a/b)/c=a/b*c
+            nvo=(NodoArb**)malloc(2*sizeof(NodoArb*));
+            nvo[1]=crearNodoArb(fun->izq->der, fun->der, crearchar(prod));
+            nvo[0]=crearNodoArb(fun->izq->izq, nvo[1], crearchar(divi));
+        } else if(((char*)(fun->izq)->dato)[0]!='/' && ((char*)(fun->der)->dato)[0]=='/'){
+            //a/(b/c)=a*c/b
+            nvo=(NodoArb**)malloc(2*sizeof(NodoArb*));
+            nvo[1]=crearNodoArb(fun->izq, fun->izq->izq, crearchar(prod));
+            nvo[0]=crearNodoArb(nvo[1], fun->der->izq, crearchar(divi));
+        } else if(((char*)(fun->izq)->dato)[0]=='/' && ((char*)(fun->der)->dato)[0]=='/'){
+            //(a/b)/(c/d)=a*d/b*c
+            nvo=(NodoArb**)malloc(3*sizeof(NodoArb*));
+            nvo[2]=crearNodoArb(fun->izq->izq, fun->der->der, crearchar(prod));
+            nvo[1]=crearNodoArb(fun->izq->der, fun->der->izq, crearchar(prod));
+            nvo[0]=crearNodoArb(nvo[2], nvo[1], crearchar(divi));
+        }
+    } else {
+        //No se cumple ninguna condicion para simplificar o fun es un numero/funcion
+        nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
+        *nvo=crearNodoArb(fun->izq, fun->der, fun->dato);
+    }
+    //free(fun);
+    (*nvo)->der=SimplificarRaiz((*nvo)->der);
+    (*nvo)->izq=SimplificarRaiz((*nvo)->izq);
+    
+    return *nvo;
+}
+
+NodoArb *SimplificarFun(NodoArb *fun){
+    if(!fun) return (NodoArb*)NULL;
+    NodoArb *nvo=crearNodoArb(SimplificarFun(fun->izq), SimplificarFun(fun->der), fun->dato);
+    nvo=SimplificarRaiz(nvo);
+    return nvo;
+}
+
 int main(){
     char* expinc,*exp1, *res;
     NodoArb* exp2, *exp3;
     NodoL* p;
     crearPila(&p);
-    printf("\nIntroduzca su expresion: ");
+    printf("\nf(x)=");
     scanf("%[^\n]", expinc);
     
     exp1=NLCAD(PostFijo(expinc));
@@ -671,9 +702,10 @@ int main(){
     //printf("Recorrido del arbol en postorden:");
     //imprimeArb(exp2, &impCad);
     
-    ARBNL(Derivador(exp2), &p);
+    //ARBNL(Derivador(exp2), &p);
+    ARBNL(SimplificarFun(Derivador(exp2)), &p);
     res=NLCAD(p);
-    printf("\nLa derivada es: ");
+    printf("\nf'(x)=");
     //imprimeArb(Derivador(exp2), &impCad);
     printf("%s", ((Expifj*)Infija(res)->dato)->exp);
     
