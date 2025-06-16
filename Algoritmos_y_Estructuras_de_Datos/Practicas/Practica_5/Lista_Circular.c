@@ -72,20 +72,22 @@ void prtInt(void *dato){
 int main(){
     NodoL* LC;
     int a=2, b=3, c=4, d=5, e=6;
+    int confirmar=1;
     createLC(&LC);
     LC=insertNC(&a, LC);
     LC=insertNC(&b, LC);
     LC=insertNC(&c, LC);
     LC=insertNC(&d, LC);
     LC=insertNC(&e, LC);
-    while(1){
+    while(confirmar==1){
         printf("\n");
         system("cls");
         travelLC(LC, &prtInt);
         nextNC(&LC);
-        sleep(2);
+        printf("\n");
+        scanf("%d", &confirmar);
+        //ussleep(1);
     }
-    ;
     //deleteNC(LC); 
     //printf("\n");
     //travelLC(LC, &prtInt);
