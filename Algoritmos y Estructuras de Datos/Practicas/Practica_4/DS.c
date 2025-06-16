@@ -131,23 +131,23 @@ int IsDigito(char carac){
     return 0;
 }
 
-int IsFunction(char *exp, int *i){
-    if(exp[*i]=='l' && exp[*i+1]=='n'){
+int IsFunction(char *exp, int i){
+    if(exp[i]=='l' && exp[i+1]=='n'){
         return 1;//Funcion ln
-    } else if((exp[*i]=='s' && exp[*i+1]=='e' && exp[*i+2]=='n') ||
-            (exp[*i]=='c' && exp[*i+1]=='o' && exp[*i+2]=='s') ||
-            (exp[*i]=='t' && exp[*i+1]=='a' && exp[*i+2]=='n') ||
-            (exp[*i]=='c' && exp[*i+1]=='o' && exp[*i+2]=='t') ||
-            (exp[*i]=='s' && exp[*i+1]=='e' && exp[*i+2]=='c') ||
-            (exp[*i]=='c' && exp[*i+1]=='s' && exp[*i+2]=='c') 
+    } else if((exp[i]=='s' && exp[i+1]=='e' && exp[i+2]=='n') ||
+            (exp[i]=='c' && exp[i+1]=='o' && exp[i+2]=='s') ||
+            (exp[i]=='t' && exp[i+1]=='a' && exp[i+2]=='n') ||
+            (exp[i]=='c' && exp[i+1]=='o' && exp[i+2]=='t') ||
+            (exp[i]=='s' && exp[i+1]=='e' && exp[i+2]=='c') ||
+            (exp[i]=='c' && exp[i+1]=='s' && exp[i+2]=='c') 
             ){
         return 2;//Funcion trigonometrica
-    } else if((exp[*i]=='a' && exp[*i+1]=='r' && exp[*i+2]=='c' && exp[*i+3]=='s' && exp[*i+4]=='e' && exp[*i+5]=='n') ||
-            (exp[*i]=='a' && exp[*i+1]=='r' && exp[*i+2]=='c' && exp[*i+3]=='c' && exp[*i+4]=='o' && exp[*i+5]=='s') ||
-            (exp[*i]=='a' && exp[*i+1]=='r' && exp[*i+2]=='c' && exp[*i+3]=='t' && exp[*i+4]=='a' && exp[*i+5]=='n') ||
-            (exp[*i]=='a' && exp[*i+1]=='r' && exp[*i+2]=='c' && exp[*i+3]=='c' && exp[*i+4]=='o' && exp[*i+5]=='t') ||
-            (exp[*i]=='a' && exp[*i+1]=='r' && exp[*i+2]=='c' && exp[*i+3]=='s' && exp[*i+4]=='e' && exp[*i+5]=='c') ||
-            (exp[*i]=='a' && exp[*i+1]=='r' && exp[*i+2]=='c' && exp[*i+3]=='c' && exp[*i+4]=='s' && exp[*i+5]=='c') 
+    } else if((exp[i]=='a' && exp[i+1]=='r' && exp[i+2]=='c' && exp[i+3]=='s' && exp[i+4]=='e' && exp[i+5]=='n') ||
+            (exp[i]=='a' && exp[i+1]=='r' && exp[i+2]=='c' && exp[i+3]=='c' && exp[i+4]=='o' && exp[i+5]=='s') ||
+            (exp[i]=='a' && exp[i+1]=='r' && exp[i+2]=='c' && exp[i+3]=='t' && exp[i+4]=='a' && exp[i+5]=='n') ||
+            (exp[i]=='a' && exp[i+1]=='r' && exp[i+2]=='c' && exp[i+3]=='c' && exp[i+4]=='o' && exp[i+5]=='t') ||
+            (exp[i]=='a' && exp[i+1]=='r' && exp[i+2]=='c' && exp[i+3]=='s' && exp[i+4]=='e' && exp[i+5]=='c') ||
+            (exp[i]=='a' && exp[i+1]=='r' && exp[i+2]=='c' && exp[i+3]=='c' && exp[i+4]=='s' && exp[i+5]=='c') 
             ){
         return 3;//Funcion trigonometrica
     } else {
@@ -194,13 +194,13 @@ NodoL* PostFijo(char* exp){
             if(exp[ind]=='x'){
                 expfn=crearNodoL(expfn, &exp[ind]);
                 expfn=crearNodoL(expfn, &coma);
-            } else if(IsFunction(exp, &ind)){
+            } else if(IsFunction(exp, ind)){
                 copind=ind;
-                if(IsFunction(exp, &ind)==1){
+                if(IsFunction(exp, ind)==1){
                     ind=ind+3;
-                } else if(IsFunction(exp, &ind)==2){
+                } else if(IsFunction(exp, ind)==2){
                     ind=ind+4;
-                } else if(IsFunction(exp, &ind)==3){
+                } else if(IsFunction(exp, ind)==3){
                     ind=ind+7;
                 }
                 expfn=ConcListaInv(expfn, PostFijo(exp));
@@ -261,19 +261,19 @@ char* crearsubcad(char* exp, int* i){
     char* c;
     int cont;
     cont=0;
-    if(IsFunction(exp, i)){
-        if(IsFunction(exp, i)==1){
+    if(IsFunction(exp, *i)){
+        if(IsFunction(exp, *i)==1){
             c=(char*)malloc(3*sizeof(char));
             c[0]=exp[*i];
             c[1]=exp[*i+1];
             c[2]='\0';
-        } else if(IsFunction(exp, i)==2){
+        } else if(IsFunction(exp, *i)==2){
             c=(char*)malloc(4*sizeof(char));
             c[0]=exp[*i];
             c[1]=exp[*i+1];
             c[2]=exp[*i+2];
             c[3]='\0';
-        } else if(IsFunction(exp, i)==3){
+        } else if(IsFunction(exp, *i)==3){
             c=(char*)malloc(7*sizeof(char));
             c[0]=exp[*i];
             c[1]=exp[*i+1];
@@ -326,14 +326,14 @@ NodoArb* BuildArb(char* s){
                 izq=(NodoArb*)pop(&p1);
                 nvo->der=der;
                 nvo->izq=izq;
-            } else if(IsFunction(s, &inda)){
+            } else if(IsFunction(s, inda)){
                 izq=(NodoArb*)pop(&p1);
                 nvo->izq=izq;
-                if(IsFunction(s, &inda)==1){
+                if(IsFunction(s, inda)==1){
                     inda++;
-                } else if(IsFunction(s, &inda)==2){
+                } else if(IsFunction(s, inda)==2){
                     inda=inda+2;
-                } else if(IsFunction(s, &inda)==3){
+                } else if(IsFunction(s, inda)==3){
                     inda=inda+5;
                 }
             }
@@ -522,10 +522,10 @@ NodoL* Infija(char* exp){
             if(IsDigito(exp[inda]) || exp[inda]=='x'){
                 out->exp=crearsubcad(exp, &inda);
                 out->op='N';
-            } else if(IsFunction(exp, &inda)){
+            } else if(IsFunction(exp, inda)){
                 el1=(Expifj*)pop(&p1);//Argumento de la funcion
                 tamt=tamcad(el1->exp, 0)+3;
-                if(IsFunction(exp, &inda)==1){
+                if(IsFunction(exp, inda)==1){
                     tamt=tamt+2;
                     out->exp=(char*)malloc(tamt*sizeof(char));
                     out->exp[0]='l';
@@ -533,7 +533,7 @@ NodoL* Infija(char* exp){
                     out->exp[2]='(';
                     for(int i=3, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
                     inda=inda+1;
-                } else if(IsFunction(exp, &inda)==2){
+                } else if(IsFunction(exp, inda)==2){
                     //Trigonometrica
                     tamt=tamt+3;
                     out->exp=(char*)malloc(tamt*sizeof(char));
@@ -543,7 +543,7 @@ NodoL* Infija(char* exp){
                     out->exp[3]='(';
                     for(int i=4, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
                     inda=inda+2;
-                } else if(IsFunction(exp, &inda)==3){
+                } else if(IsFunction(exp, inda)==3){
                     //arc trigonometrica
                     tamt=tamt+6;
                     out->exp=(char*)malloc(tamt*sizeof(char));
@@ -565,7 +565,7 @@ NodoL* Infija(char* exp){
                 el2=(Expifj*)pop(&p1);//Operando derecho
                 el1=(Expifj*)pop(&p1);//Operando izquierdo
                 tamt=tamcad(el1->exp, 0)+tamcad(el2->exp, 0)+2;
-                if((CompOp(el1->op, exp[inda])==1 && CompOp(el2->op, exp[inda])==-1) || (exp[inda]=='-' && (el2->op=='+' || el2->op=='-'))){
+                if((CompOp(el1->op, exp[inda])==1 && CompOp(el2->op, exp[inda])==-1) || (exp[inda]=='-' && (el2->op=='+' || el2->op=='-')) || (exp[inda]=='/' && el1->op=='N' && el2->op!='N')){
                     //Cuando el operador de entrada es mayor que el de ele2 o sean iguales a '-'
                     out->exp=(char*)malloc((tamt+2)*sizeof(char));
                     for(int i=0; el1->exp[i]!='\0'; i++) out->exp[i]=el1->exp[i];
@@ -574,7 +574,7 @@ NodoL* Infija(char* exp){
                     for(int i=tamcad(el1->exp, 0)+2, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
                     out->exp[tamt]=')';
                     out->exp[tamt+1]='\0';
-                } else if(CompOp(el1->op, exp[inda])==-1 && CompOp(el2->op, exp[inda])==-1){
+                } else if((CompOp(el1->op, exp[inda])==-1 && CompOp(el2->op, exp[inda])==-1) || (exp[inda]=='/' && el1->op!='N' && el2->op!='N')){
                     //Los operadores de el1 y el2 son menores al de la entrada
                     out->exp=(char*)malloc((tamt+4)*sizeof(char));
                     out->exp[0]='(';
@@ -585,14 +585,14 @@ NodoL* Infija(char* exp){
                     for(int i=tamcad(el1->exp, 0)+4, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
                     out->exp[tamt+2]=')';
                     out->exp[tamt+3]='\0';
-                } else if(CompOp(el1->op, exp[inda])==1 && CompOp(el2->op, exp[inda])==1){
+                } else if((CompOp(el1->op, exp[inda])==1 && CompOp(el2->op, exp[inda])==1) || (exp[inda]=='/' && el1->op=='N' && el2->op=='N')){
                     //Cuando el1 y el2 son numeros o funciones (trigo, log, arc)
                     out->exp=(char*)malloc(tamt*sizeof(char));
                     for(int i=0; el1->exp[i]!='\0'; i++) out->exp[i]=el1->exp[i];
                     out->exp[tamcad(el1->exp, 0)]=exp[inda];
                     for(int i=tamcad(el1->exp, 0)+1, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
                     out->exp[tamt-1]='\0';
-                } else if(CompOp(el1->op, exp[inda])==-1 && CompOp(el2->op, exp[inda])==1){
+                } else if((CompOp(el1->op, exp[inda])==-1 && CompOp(el2->op, exp[inda])==1) || (exp[inda]=='/' && el1->op!='N' && el2->op=='N')){
                     //Cuando el operador de entrada es mas grande que el del el1
                     out->exp=(char*)malloc((tamt+2)*sizeof(char));
                     out->exp[0]='(';
@@ -635,7 +635,7 @@ NodoArb *SimplificarRaiz(NodoArb *fun){
         else if(((char*)(fun->der)->dato)[0]=='1')
             *nvo=fun->izq;
     } else if((((char*)fun->dato)[0]=='*' || ((char*)fun->dato)[0]=='/') && (((char*)(fun->izq)->dato)[0]=='0' || ((char*)(fun->der)->dato)[0]=='0')){
-        //0*u=0
+        //0*u=0, 0/u
         nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
         *nvo=crearNodoArb(NULL, NULL, crearchar(cero));
         //Nota: el caso de u/0 entra en este if, sin embargo, esto jamas ocurrira a menos que el usuario ingrese una expresion similar
@@ -673,10 +673,9 @@ NodoArb *SimplificarRaiz(NodoArb *fun){
         nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
         *nvo=crearNodoArb(fun->izq, fun->der, fun->dato);
     }
-    //free(fun);
     (*nvo)->der=SimplificarRaiz((*nvo)->der);
     (*nvo)->izq=SimplificarRaiz((*nvo)->izq);
-    
+    //free(fun);
     return *nvo;
 }
 
@@ -691,22 +690,19 @@ int main(){
     char* expinc,*exp1, *res;
     NodoArb* exp2, *exp3;
     NodoL* p;
+    //Se recibe la función
     crearPila(&p);
     printf("\nf(x)=");
     scanf("%[^\n]", expinc);
     
-    exp1=NLCAD(PostFijo(expinc));
-    //printf("Notacion postfija: %s\n", exp1);
-    
+    //Se convierte a notación postfija y después se construye el árbol
+    exp1=NLCAD(PostFijo(expinc));    
     exp2=BuildArb(exp1);
-    //printf("Recorrido del arbol en postorden:");
-    //imprimeArb(exp2, &impCad);
-    
-    //ARBNL(Derivador(exp2), &p);
+
+    //Se construye el árbol derivado, se simplifica y se convierte a cadena en notación infija
     ARBNL(SimplificarFun(Derivador(exp2)), &p);
     res=NLCAD(p);
-    printf("\nf'(x)=");
-    //imprimeArb(Derivador(exp2), &impCad);
+    printf("f'(x)=");
     printf("%s", ((Expifj*)Infija(res)->dato)->exp);
     
     return 0;

@@ -1,7 +1,7 @@
 /*
 18/05/2025
 En esta practica se codificara las funciones para una lista circular, la cual
-basicamente es que el ultimo no apunte al primero.
+basicamente es que el ultimo apunte al primero?.
 Las funciones son:
 - Crear
 - Insertar
@@ -13,6 +13,7 @@ Mas aparte, se tendra que implementar en un carrusel (sin interfaz, obviamente)
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 typedef struct nodoL{
     void *dato;
@@ -38,24 +39,24 @@ NodoL *insertNC(void* dato, NodoL* list){
 }
 
 void deleteNC(NodoL *list){
-    NodoL* p, *q;
+    NodoL* p;
     if(!list) return;
-    if((list)->sig=list){
+    if(list==list->sig){
         free(list);
         return;
-    } 
+    }
     p=list->sig;
     list->sig=p->sig;
-    //p=(NodoL*)NULL;
+    free(p);
 }
 
 void travelLC(NodoL* list, void(*f)(void*)){
     NodoL* p;
-    p=list;
+    p=list->sig;
     do{
         f(p->dato);
         p=p->sig;
-    } while(p!=list);
+    } while(p!=list->sig);
 }
 
 void nextNC(NodoL **list){
@@ -77,8 +78,15 @@ int main(){
     LC=insertNC(&c, LC);
     LC=insertNC(&d, LC);
     LC=insertNC(&e, LC);
-    travelLC(LC, &prtInt);
-    deleteNC(LC);
-    printf("\n");
-    travelLC(LC, &prtInt);
+    while(1){
+        printf("\n");
+        system("cls");
+        travelLC(LC, &prtInt);
+        nextNC(&LC);
+        sleep(2);
+    }
+    ;
+    //deleteNC(LC); 
+    //printf("\n");
+    //travelLC(LC, &prtInt);
 }
