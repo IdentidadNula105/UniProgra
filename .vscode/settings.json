@@ -62,6 +62,10 @@
     "stdlib.h": "c",
     "cmath": "c",
     "cstdlib": "c",
-    "MAIN.C": "cpp"
+    "MAIN.C": "cpp",
+    "arbbi.h": "c",
+    "piladin.h": "c",
+    "notainfpost.h": "c",
+    "stdio.h": "c"
   }
 }

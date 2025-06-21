@@ -28,8 +28,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/diaza/Desktop/Uni_Progra/Algoritmos y Estructuras de Datos/Tipos de Datos Abstractos/ListasEnlazadas",
-      "program": "c:/Users/diaza/Desktop/Uni_Progra/Algoritmos y Estructuras de Datos/Tipos de Datos Abstractos/ListasEnlazadas/build/Debug/outDebug",
+      "cwd": "c:/Users/diaza/Desktop/Uni-Programacion/Algoritmos_y_Estructuras_de_Datos/Proyecto_DS",
+      "program": "c:/Users/diaza/Desktop/Uni-Programacion/Algoritmos_y_Estructuras_de_Datos/Proyecto_DS/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "C:/msys64/ucrt64/bin/gdb.exe",
       "setupCommands": [
