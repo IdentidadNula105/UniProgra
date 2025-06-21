@@ -71,22 +71,21 @@ void prtInt(void *dato){
 
 int main(){
     NodoL* LC;
-    int a=2, b=3, c=4, d=5, e=6;
+    char* a="start 1.png", *b="start 2.jpg", *c="start 3.jpg";
     int confirmar=1;
     createLC(&LC);
-    LC=insertNC(&a, LC);
-    LC=insertNC(&b, LC);
-    LC=insertNC(&c, LC);
-    LC=insertNC(&d, LC);
-    LC=insertNC(&e, LC);
+    LC=insertNC(a, LC);
+    LC=insertNC(b, LC);
+    LC=insertNC(c, LC);
     while(confirmar==1){
-        printf("\n");
+        //printf("\n");
+        //travelLC(LC, &prtInt);
         system("cls");
-        travelLC(LC, &prtInt);
+        system((char*)LC->dato);
         nextNC(&LC);
-        printf("\n");
+        //printf("\n");
         scanf("%d", &confirmar);
-        //ussleep(1);
+        //sleep(1);
     }
     //deleteNC(LC); 
     //printf("\n");
