@@ -5,6 +5,10 @@ int IsDigito(char carac);
 
 int IsFuncion(char *exp, int i);
 
+int Iscero(char *exp, int i);
+
+int Isuno(char *exp, int i);
+
 int Isln(char *exp, int i);
 
 int Issen(char* exp, int i);

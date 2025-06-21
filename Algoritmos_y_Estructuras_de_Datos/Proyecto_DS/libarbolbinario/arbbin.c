@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "arbbin.h"
 
 NodoArb* CrearNodoArb(NodoArb* izq, NodoArb* der, void* dato){
@@ -10,6 +11,12 @@ NodoArb* CrearNodoArb(NodoArb* izq, NodoArb* der, void* dato){
     newn->der=der;
     newn->dato=dato;
     return newn; 
+}
+
+int CompararArbol(NodoArb* arb1, NodoArb* arb2){
+    if(!arb1 || !arb2) return (arb1==arb2);
+    if(strcmp((char*)arb1->dato,(char*)arb2->dato)) return 0;
+    return (CompararArbol(arb1->izq, arb2->izq) && CompararArbol(arb1->der, arb2->der));
 }
 
 //Inorden

@@ -9,6 +9,8 @@ struct nodoArbol{
 
 NodoArb* CrearNodoArb(NodoArb* izq, NodoArb* der, void* dato);
 
+int CompararArbol(NodoArb* arb1, NodoArb* arb2);
+
 void ImprimeArb(NodoArb* r, void(*f)(void*));
 
 void impInt(void* dato);

@@ -7,8 +7,6 @@ NodoArb* DerivarArbolFuncion(NodoArb* fun);
 
 void Convertir_Arbol_Lista(NodoArb* arb, NodoL** p);
 
-NodoArb *SimplificarRaiz(NodoArb *fun);
-
 NodoArb *SimplificarArbolFuncion(NodoArb *fun);
 
 #endif

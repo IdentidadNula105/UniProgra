@@ -20,6 +20,7 @@ int main(){
 
     //Se construye el árbol derivado, se simplifica y se convierte a cadena en notación infija
     Convertir_Arbol_Lista(SimplificarArbolFuncion(DerivarArbolFuncion(exp2)), &p);
+    //Convertir_Arbol_Lista(DerivarArbolFuncion(exp2), &p);
     res=Convertir_Lista_Cadena(p);
     printf("f'(x)=");
     printf("%s", ((Expifj*)Infija(res)->dato)->exp);
