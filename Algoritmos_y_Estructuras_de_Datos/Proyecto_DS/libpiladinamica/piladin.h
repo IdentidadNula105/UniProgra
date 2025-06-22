@@ -1,5 +1,6 @@
 #ifndef piladin
 #define piladin
+
 struct nodoL{
     void * dato;//Almacena cualquier valor, resguardando la direccion del valor
     struct nodoL * sig;
@@ -22,4 +23,5 @@ NodoL* Push(NodoL** stack, void* dato);
 void* Top(NodoL* stack);
 
 void* Pop(NodoL** stack);
+
 #endif

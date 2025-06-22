@@ -66,6 +66,7 @@
     "arbbi.h": "c",
     "piladin.h": "c",
     "notainfpost.h": "c",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "cadesp.h": "c"
   }
 }

@@ -3,7 +3,7 @@
 #include "is.h"
 
 int IsDigito(char carac){
-    if((carac>47 && carac<58) || carac==69 || carac==101) return 1;//numero, e, x
+    if((carac>47 && carac<58) || carac==101) return 1;//numero, e
     return 0;
 }
 
@@ -17,6 +17,26 @@ int IsFuncion(char *exp, int i){
     } else {
         return 0;//No es funcion
     }
+}
+
+int IsOperador(char c){
+    if(c=='+' || c=='-' || c=='*' || c=='/' || c=='^') return 1;
+    return 0;
+}
+
+int IsFuncionValida(char *exp){
+    if(!exp) return 0;
+    int indice=0, bandera=1, contPare1=0, contPare2=0, Opcons=0;
+    while(bandera==1 && exp[indice]!='\0'){
+        if(exp[indice]=='(') contPare1++;
+        if(exp[indice]==')') contPare2++;
+        if(IsOperador(exp[indice]) && Opcons==0) Opcons=1;
+        else if(!IsOperador(exp[indice]) && Opcons==1) Opcons=0;
+        else if(IsOperador(exp[indice]) && Opcons==1) bandera=0;
+        indice++;
+    }
+    if(contPare1!=contPare2) bandera=0;
+    return bandera;
 }
 
 int Iscero(char *exp, int i){

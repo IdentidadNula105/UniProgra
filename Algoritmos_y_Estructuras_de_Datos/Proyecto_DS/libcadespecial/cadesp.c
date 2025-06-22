@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "../libis/is.h"
 #include "cadesp.h"
 
@@ -49,6 +50,26 @@ char* CrearSubcadena(char* exp, int* i){
 int TamanoCadena(char* exp, int i){
     if(exp[i]=='\0') return 0;
     return 1+TamanoCadena(exp, i+1);
+}
+
+int Convertir_Cad_Numero(char *numero){
+    int numeroint, indice;
+    for(indice=numeroint=0; numero[indice]!='\0'; indice++)
+        numeroint=(numero[indice]-'0')+numeroint*10;
+    return numeroint;
+}
+
+char *Convertir_Numero_Cad(int numero){
+    int tamnumero, temp=0;
+    for(tamnumero=0; (int)(numero/pow(10, tamnumero+1)); tamnumero++);
+    tamnumero++;
+    char* numerocad=(char*)malloc((tamnumero+1)*sizeof(char));
+    for(int i=tamnumero-1, temp=numero; i>=0; i--){
+        numerocad[i]='0'+(int)(temp%10);
+        temp=(temp-temp%10)/10;
+    }
+    numerocad[tamnumero]='\0';
+    return numerocad;
 }
 
 char* CrearChar(char c){

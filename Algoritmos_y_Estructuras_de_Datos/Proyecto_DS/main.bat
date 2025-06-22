@@ -13,9 +13,9 @@ ar rcs libcadespecial/libcadesp.a libcadespecial/cadesp.o
 gcc -c libnotainfpost/notainfpost.c -Ilibcadespecial -Ilibis -Ilibpiladinamica  -o libnotainfpost/notainfpost.o
 ar rcs libnotainfpost/libnotainfpost.a libnotainfpost/notainfpost.o
 
-gcc -c libderivadorsimb/derivsimb.c -Ilibcadespecial -Ilibis -Ilibarbolbinario -Ilibpiladinamica -o libderivadorsimb/derivsimb.o
+gcc -c libderivadorsimb/derivsimb.c -Ilibnotainfpost -Ilibcadespecial -Ilibis -Ilibarbolbinario -Ilibpiladinamica -o libderivadorsimb/derivsimb.o
 ar rcs libderivadorsimb/libderivsimb.a libderivadorsimb/derivsimb.o
 
-gcc main.c -Ilibderivadorsimb -Ilibnotainfpost -Ilibcadespecial -Ilibis -Ilibarbolbinario -Ilibpiladinamica -Llibderivadorsimb -Llibnotainfpost -Llibcadespecial -Llibis -Llibarbolbinario -Llibpiladinamica -lderivsimb -lnotainfpost -lcadesp -lis -larbbin -lpiladin -o main.exe
+gcc main.c -Ilibderivadorsimb -Ilibnotainfpost -Ilibcadespecial -Ilibis -Ilibpiladinamica -Ilibarbolbinario -Llibderivadorsimb -Llibnotainfpost -Llibcadespecial -Llibis -Llibpiladinamica -Llibarbolbinario -lderivsimb -lnotainfpost -lcadesp -lis -lpiladin -larbbin -o main.exe
 
 main.exe

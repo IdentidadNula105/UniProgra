@@ -5,6 +5,10 @@ int IsDigito(char carac);
 
 int IsFuncion(char *exp, int i);
 
+int IsOperador(char c);
+
+int IsFuncionValida(char *exp);
+
 int Iscero(char *exp, int i);
 
 int Isuno(char *exp, int i);
