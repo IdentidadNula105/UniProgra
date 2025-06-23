@@ -434,7 +434,6 @@ NodoArb* SimplificarArbMulti(NodoArb* fun){
     NodoArb**nvo;
     if(IsDigito(funizqdato[0]) && IsDigito(funderdato[0])){
         //a*b=c
-        printf("xd");
         nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
         nvo[0]=CrearNodoArb(NULL, NULL, Convertir_Numero_Cad(Convertir_Cad_Numero(funizqdato)*Convertir_Cad_Numero(funderdato)));
     } else if(Iscero(funderdato, 0) || Iscero(funizqdato, 0)){
@@ -528,7 +527,6 @@ NodoArb* SimplificarArbDivision(NodoArb* fun){
     NodoArb**nvo;
     if(IsDigito(funizqdato[0]) && IsDigito(funderdato[0])){
         //a/b=c
-        printf("xd2");
         if(!(Convertir_Cad_Numero(funizqdato)%Convertir_Cad_Numero(funderdato))){
             nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
             nvo[0]=CrearNodoArb(NULL, NULL, Convertir_Numero_Cad(Convertir_Cad_Numero(funizqdato)/Convertir_Cad_Numero(funderdato)));
@@ -651,8 +649,8 @@ NodoArb* SimplificarArbPoten(NodoArb* fun){
 NodoArb *SimplificarArbolFuncion(NodoArb *fun){
     if(!fun) return (NodoArb*)NULL;
     NodoArb **nvo;
-    //fun->der=SimplificarArbolFuncion(fun->der);
-    //fun->izq=SimplificarArbolFuncion(fun->izq);
+    fun->der=SimplificarArbolFuncion(fun->der);
+    fun->izq=SimplificarArbolFuncion(fun->izq);
     nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
     if(fundato[0]=='+'){
         *nvo=SimplificarArbSuma(fun);
