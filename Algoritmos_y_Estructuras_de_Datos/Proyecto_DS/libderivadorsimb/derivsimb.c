@@ -687,7 +687,7 @@ char *Derivar(char *funcionx){
     
     //Se convierte a notación postfija y después se construye el árbol
     exp1=Convertir_Lista_Cadena(PostFijo(funcionx));
-    exp2=ConstruirArbolFuncion(exp1);
+    exp2=SimplificarFun(ConstruirArbolFuncion(exp1));
 
     //Se construye el árbol derivado, se simplifica y se convierte a cadena en notación infija
     //Convertir_Arbol_Lista(SimplificarFun((exp2)), &p);
