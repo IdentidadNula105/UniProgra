@@ -20,11 +20,11 @@ typedef struct nodoL{
     struct nodoL *sig;
 }NodoL;
 
-void *createLC(NodoL** list){
+void *CrearNC(NodoL** list){
     *list=(NodoL*)NULL;
 }
 
-NodoL *insertNC(void* dato, NodoL* list){
+NodoL *InsertarNC(void* dato, NodoL* list){
     NodoL *p, *q;
     p=(NodoL*)malloc(sizeof(NodoL));
     p->dato=dato;
@@ -38,7 +38,7 @@ NodoL *insertNC(void* dato, NodoL* list){
     }
 }
 
-void deleteNC(NodoL *list){
+void EliminarNC(NodoL *list){
     NodoL* p;
     if(!list) return;
     if(list==list->sig){
@@ -50,7 +50,7 @@ void deleteNC(NodoL *list){
     free(p);
 }
 
-void travelLC(NodoL* list, void(*f)(void*)){
+void RecorrerLC(NodoL* list, void(*f)(void*)){
     NodoL* p;
     p=list->sig;
     do{
@@ -59,7 +59,7 @@ void travelLC(NodoL* list, void(*f)(void*)){
     } while(p!=list->sig);
 }
 
-void nextNC(NodoL **list){
+void SiguienteNC(NodoL **list){
     NodoL* p;
     p=*list;
     *list=p->sig;
@@ -73,21 +73,18 @@ int main(){
     NodoL* LC;
     char* a="start 1.png", *b="start 2.jpg", *c="start 3.jpg";
     int confirmar=1;
-    createLC(&LC);
-    LC=insertNC(a, LC);
-    LC=insertNC(b, LC);
-    LC=insertNC(c, LC);
+    CrearNC(&LC);
+    LC=InsertarNC(a, LC);
+    LC=InsertarNC(b, LC);
+    LC=InsertarNC(c, LC);
     while(confirmar==1){
         //printf("\n");
-        //travelLC(LC, &prtInt);
+        //RecorrerLC(LC, &prtInt);
         system("cls");
         system((char*)LC->dato);
-        nextNC(&LC);
+        SiguienteNC(&LC);
         //printf("\n");
         scanf("%d", &confirmar);
         //sleep(1);
     }
-    //deleteNC(LC); 
-    //printf("\n");
-    //travelLC(LC, &prtInt);
 }
