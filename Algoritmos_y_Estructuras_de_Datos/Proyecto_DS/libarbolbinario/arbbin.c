@@ -36,7 +36,7 @@ void impChar(void* dato){
 }
 
 void impCad(void* dato){
-    printf("%s", (char*)dato);
+    printf("\n%s", (char*)dato);
 }
 
 void impFloat(void* dato){

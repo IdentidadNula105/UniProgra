@@ -69,22 +69,32 @@ void prtInt(void *dato){
     printf("(%d)", *(int*)dato);
 }
 
+void prtCad(void *dato){
+    printf("\n-> %s", (char*)dato);
+}
+
 int main(){
     NodoL* LC;
-    char* a="start 1.png", *b="start 2.jpg", *c="start 3.jpg";
+    char* a="start 1.jpg", *b="start 2.jpg", *c="start 3.jpg";
     int confirmar=1;
     CrearNC(&LC);
     LC=InsertarNC(a, LC);
     LC=InsertarNC(b, LC);
     LC=InsertarNC(c, LC);
+    printf("\nComandos de la lista:");
+    RecorrerLC(LC, &prtCad);
     while(confirmar==1){
-        //printf("\n");
-        //RecorrerLC(LC, &prtInt);
-        system("cls");
+        printf("\nComando a ejecutar: %s", (char*)LC->dato);
+        printf("\nDesea ejecutarlo?: ");
+        scanf("%d", &confirmar);
+        if(confirmar==1){
         system((char*)LC->dato);
         SiguienteNC(&LC);
+        } else {
+        confirmar=0;
+        }
+        
         //printf("\n");
-        scanf("%d", &confirmar);
         //sleep(1);
     }
 }
