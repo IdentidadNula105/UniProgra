@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/diaza/Desktop/Uni-Programacion/Algoritmos_y_Estructuras_de_Datos/Proyecto_DS/libderivadorsimb",
-      "program": "c:/Users/diaza/Desktop/Uni-Programacion/Algoritmos_y_Estructuras_de_Datos/Proyecto_DS/libderivadorsimb/build/Debug/outDebug",
+      "cwd": "c:/Users/diaza/Desktop/Uni-Programacion/Algoritmos_y_Estructuras_de_Datos/Proyecto_DS/libderivarbfun",
+      "program": "c:/Users/diaza/Desktop/Uni-Programacion/Algoritmos_y_Estructuras_de_Datos/Proyecto_DS/libderivarbfun/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

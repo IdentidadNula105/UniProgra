@@ -4,6 +4,23 @@
 #include "../libis/is.h"
 #include "cadesp.h"
 
+char coma=',';
+char cero='0';
+char uno='1';
+char dos='2';
+char sum='+';
+char dif='-';
+char prod='*';
+char divi='/';
+char expo='^';
+char* ln="ln";
+char* senl="sen";
+char* csl="cos";
+char* tnl="tan";
+char* cotl="cot";
+char* secl="sec";
+char* cscl="csc";
+
 char* CrearSubcadena(char* exp, int* i){
     char* c;
     int cont;
@@ -78,4 +95,77 @@ char* CrearChar(char c){
     s[0]=c;
     s[1]='\0';
     return s;
+}
+
+char *Cadcoma(){
+    char *cad=CrearChar(coma);
+    return cad;
+}
+
+char *Cadcero(){
+    char *cad=CrearChar(cero);
+    return cad;
+}
+
+char *Caduno(){
+    char *cad=CrearChar(uno);
+    return cad;
+}
+
+char *Caddos(){
+    char *cad=CrearChar(dos);
+    return cad;
+}
+
+char *Cadsum(){
+    char *cad=CrearChar(sum);
+    return cad;
+}
+
+char *Caddif(){
+    char *cad=CrearChar(dif);
+    return cad;
+}
+
+char *Cadprod(){
+    char *cad=CrearChar(prod);
+    return cad;
+}
+
+char *Caddivi(){
+    char *cad=CrearChar(divi);
+    return cad;
+}
+
+char *Cadexpo(){
+    char *cad=CrearChar(expo);
+    return cad;
+}
+
+char *Cadln(){
+    return ln;
+}
+
+char *Cadsen(){
+    return senl;
+}
+
+char *Cadcos(){
+    return csl;
+}
+
+char *Cadtan(){
+    return tnl;
+}
+
+char *Cadcot(){
+    return cotl;
+}
+
+char *Cadsec(){
+    return secl;
+}
+
+char *Cadcsc(){
+    return cscl;
 }

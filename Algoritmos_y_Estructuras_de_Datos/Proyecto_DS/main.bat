@@ -13,9 +13,12 @@ ar rcs libcadespecial/libcadesp.a libcadespecial/cadesp.o
 gcc -c libnotainfpost/notainfpost.c -Ilibcadespecial -Ilibis -Ilibpiladinamica  -o libnotainfpost/notainfpost.o
 ar rcs libnotainfpost/libnotainfpost.a libnotainfpost/notainfpost.o
 
-gcc -c libderivadorsimb/derivsimb.c -Ilibnotainfpost -Ilibcadespecial -Ilibis -Ilibarbolbinario -Ilibpiladinamica -o libderivadorsimb/derivsimb.o
-ar rcs libderivadorsimb/libderivsimb.a libderivadorsimb/derivsimb.o
+gcc -c libsimparbfun/simparbfun.c -Ilibcadespecial -Ilibis  -Ilibarbolbinario  -o libsimparbfun/simparbfun.o
+ar rcs libsimparbfun/libsimparbfun.a libsimparbfun/simparbfun.o
 
-gcc main.c -Ilibderivadorsimb -Ilibnotainfpost -Ilibcadespecial -Ilibis -Ilibpiladinamica -Ilibarbolbinario -Llibderivadorsimb -Llibnotainfpost -Llibcadespecial -Llibis -Llibpiladinamica -Llibarbolbinario -lderivsimb -lnotainfpost -lcadesp -lis -lpiladin -larbbin -o main.exe
+gcc -c libderivarbfun/derivarbfun.c -Ilibnotainfpost -Ilibsimparbfun -Ilibcadespecial -Ilibis -Ilibarbolbinario -Ilibpiladinamica -o libderivarbfun/derivarbfun.o
+ar rcs libderivarbfun/libderivarbfun.a libderivarbfun/derivarbfun.o
+
+gcc main.c -Ilibderivarbfun -Ilibsimparbfun -Ilibnotainfpost -Ilibcadespecial -Ilibis -Ilibpiladinamica -Ilibarbolbinario -Llibderivarbfun -Llibsimparbfun -Llibnotainfpost -Llibcadespecial -Llibis -Llibpiladinamica -Llibarbolbinario -lderivarbfun  -lsimparbfun -lnotainfpost -lcadesp -lis -lpiladin -larbbin -o main.exe
 
 main.exe

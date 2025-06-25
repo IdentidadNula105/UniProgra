@@ -13,6 +13,8 @@ int Iscero(char *exp, int i);
 
 int Isuno(char *exp, int i);
 
+int Ise(char *exp, int i);
+
 int Isln(char *exp, int i);
 
 int Issen(char* exp, int i);

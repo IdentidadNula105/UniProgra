@@ -53,6 +53,13 @@ int Isuno(char *exp, int i){
     return 0;
 }
 
+int Ise(char *exp, int i){
+    int ind=0;
+    for(ind=i; exp[ind]!='\0'; ind++);
+    if(exp[0]=='e' || exp[0]=='E' && ind==1) return 1;
+    return 0;
+}
+
 int Isln(char *exp, int i){
     if(exp[i]=='l' && exp[i+1]=='n') return 1;
     return 0;

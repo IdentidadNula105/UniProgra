@@ -1,5 +1,5 @@
-#ifndef derivsimb
-#define derivsimb
+#ifndef derivarbfun
+#define derivarbfun
 
 typedef struct nodoArbol NodoArb;
 typedef struct nodoL NodoL;
