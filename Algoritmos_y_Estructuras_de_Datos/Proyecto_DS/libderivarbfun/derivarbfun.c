@@ -325,10 +325,10 @@ char *Derivar(char *funcionx){
     exp2=SimplificarFun(ConstruirArbolFuncion(exp1));
 
     //Se construye el árbol derivado, se simplifica y se convierte a cadena en notación infija
-    Convertir_Arbol_Lista(SimplificarFun((exp2)), &p);
+    //Convertir_Arbol_Lista(SimplificarFun((exp2)), &p);
     //Convertir_Arbol_Lista(DerivarArbolFuncion(exp2), &p);
-    //Convertir_Arbol_Lista(SimplificarFun(DerivarArbolFuncion(exp2)), &p);
+    Convertir_Arbol_Lista(SimplificarFun(DerivarArbolFuncion(exp2)), &p);
     
     res=Convertir_Lista_Cadena(p);
-    return ((Expifj*)Infija(res)->dato)->exp;
+    return Infija(res);
 }

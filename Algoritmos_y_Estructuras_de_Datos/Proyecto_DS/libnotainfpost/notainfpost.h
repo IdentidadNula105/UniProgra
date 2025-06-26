@@ -14,6 +14,6 @@ char* Convertir_Lista_Cadena(NodoL* expL);
 
 NodoL* PostFijo(char* exp);
 
-NodoL* Infija(char* exp);
+char* Infija(char* exp);
 
 #endif

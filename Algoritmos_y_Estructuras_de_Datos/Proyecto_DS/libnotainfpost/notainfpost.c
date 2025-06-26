@@ -108,7 +108,7 @@ NodoL* PostFijo(char* exp){
     return expfn;
 }
 
-NodoL* Infija(char* exp){
+char* Infija(char* exp){
     NodoL* p1;
     Expifj* out, *el1, *el2;
     int tamt=0;
@@ -206,5 +206,5 @@ NodoL* Infija(char* exp){
         }
         ind_expa++;
     }
-    return p1;
+    return ((Expifj*)p1->dato)->exp;
 }

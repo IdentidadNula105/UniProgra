@@ -55,7 +55,7 @@ NodoArb* SimplificarArbSuma(NodoArb* fun){
             nvo=(NodoArb**)malloc(3*sizeof(NodoArb*));
             nvo[2]=CrearNodoArb(fun->izq->izq, fun->der->izq, Cadsum());
             nvo[1]=CrearNodoArb(fun->der->der, fun->izq->der, Caddif());
-        }else if(funizqdato[0]=='-' && funderdato[0]=='-'){
+        } else if(funizqdato[0]=='-' && funderdato[0]=='-'){
             nvo=(NodoArb**)malloc(5*sizeof(NodoArb*));
             nvo[4]=CrearNodoArb(NULL, NULL, Cadcero());
             nvo[3]=CrearNodoArb(fun->izq->der, fun->der->der, Cadsum());
@@ -128,12 +128,6 @@ NodoArb* SimplificarArbResta(NodoArb* fun){
         } else {
             nvo[0]=CrearNodoArb(NULL, NULL, Convertir_Numero_Cad(Convertir_Cad_Numero(funizqdato)-Convertir_Cad_Numero(funderdato)));
         }
-    } else if(IsDigito(funizqdato[0]) && !IsDigito(funderdato[0])){
-        //c-u=0-(u-c)
-        nvo=(NodoArb**)malloc(3*sizeof(NodoArb*));
-        nvo[2]=CrearNodoArb(NULL, NULL, Cadcero());
-        nvo[1]=CrearNodoArb(fun->der, fun->izq, Caddif());
-        nvo[0]=CrearNodoArb(nvo[2], nvo[1], Caddif());
     } else if(CompararArbol(fun->izq, fun->der)){
         //u-u=0
         nvo[0]=CrearNodoArb(NULL, NULL, Cadcero());
@@ -235,6 +229,11 @@ NodoArb* SimplificarArbMulti(NodoArb* fun){
         nvo=(NodoArb**)malloc(2*sizeof(NodoArb*));
         nvo[1]=CrearNodoArb(fun->izq->der, fun->der->der, Cadsum());
         nvo[0]=CrearNodoArb(fun->izq->izq, nvo[1], Cadexpo());
+    } else if((funizqdato[0]=='^' && funderdato[0]=='^' && CompararArbol(fun->izq->der, fun->der->der))){
+        //(u^v)*(z^v)=(u*z)^v
+        nvo=(NodoArb**)malloc(2*sizeof(NodoArb*));
+        nvo[1]=CrearNodoArb(fun->izq->izq, fun->der->izq, Cadprod());
+        nvo[0]=CrearNodoArb(nvo[1], fun->der->der, Cadexpo());
     } else if(funizqdato[0]=='/' && funderdato[0]!='/'){
         //(u/v)*z=u*z/v
         nvo=(NodoArb**)malloc(2*sizeof(NodoArb*));
@@ -278,6 +277,7 @@ NodoArb* SimplificarArbDivision(NodoArb* fun){
     nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
     if(IsDigito(funizqdato[0]) && IsDigito(funderdato[0])){
         //a/b=c
+        
         if(!(Convertir_Cad_Numero(funizqdato)%Convertir_Cad_Numero(funderdato))){
             nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
             nvo[0]=CrearNodoArb(NULL, NULL, Convertir_Numero_Cad(Convertir_Cad_Numero(funizqdato)/Convertir_Cad_Numero(funderdato)));
@@ -321,7 +321,7 @@ NodoArb* SimplificarArbDivision(NodoArb* fun){
         nvo=(NodoArb**)malloc(2*sizeof(NodoArb*));
         nvo[1]=CrearNodoArb(fun->izq->der, fun->der->der, Caddif());
         nvo[0]=CrearNodoArb(fun->izq->izq, nvo[1], Cadexpo());
-    } if(funizqdato[0]=='/' && funderdato[0]!='/'){
+    } else if(funizqdato[0]=='/' && funderdato[0]!='/'){
         //(a/b)/c=a/b*c
         nvo=(NodoArb**)malloc(2*sizeof(NodoArb*));
         nvo[1]=CrearNodoArb(fun->izq->der, fun->der, Cadprod());
@@ -377,6 +377,12 @@ NodoArb* SimplificarArbPoten(NodoArb* fun){
         nvo=(NodoArb**)malloc(2*sizeof(NodoArb*));
         nvo[1]=CrearNodoArb(fun->izq->der, fun->der, Cadprod());
         nvo[0]=CrearNodoArb(fun->izq->izq, nvo[1], Cadexpo());
+    } else if(funderdato[0]=='-' && Iscero(funderizqdato, 0)){
+        //u^(0-v)=1/u^v
+        nvo=(NodoArb**)malloc(3*sizeof(NodoArb*));
+        nvo[2]=CrearNodoArb(NULL, NULL, Caduno());
+        nvo[1]=CrearNodoArb(fun->izq, fun->der->der, Cadexpo());
+        nvo[0]=CrearNodoArb(nvo[2], nvo[1], Caddivi());
     } else {
         (*nvo)=fun;
     }
@@ -406,33 +412,32 @@ NodoArb* SimplificarArbln(NodoArb* fun){
 
 NodoArb *SimplificarArbolFuncion(NodoArb *fun){
     if(!fun) return (NodoArb*)NULL;
-    NodoArb **nvo;
+    NodoArb *nvo;
     fun->izq=SimplificarArbolFuncion(fun->izq);
     fun->der=SimplificarArbolFuncion(fun->der);
-    nvo=(NodoArb**)malloc(1*sizeof(NodoArb*));
     if(fundato[0]=='+'){
-        *nvo=SimplificarArbSuma(fun);
+        nvo=SimplificarArbSuma(fun);
     } else if(fundato[0]=='-'){
-        *nvo=SimplificarArbResta(fun);
+        nvo=SimplificarArbResta(fun);
     } else if(fundato[0]=='*'){
-        *nvo=SimplificarArbMulti(fun);
+        nvo=SimplificarArbMulti(fun);
     } else if(fundato[0]=='/'){
-        *nvo=SimplificarArbDivision(fun);
+        nvo=SimplificarArbDivision(fun);
     } else if(fundato[0]=='^'){
-        *nvo=SimplificarArbPoten(fun);
+        nvo=SimplificarArbPoten(fun);
     } else if(Isln(fundato, 0)){
-        *nvo=SimplificarArbln(fun);
+        nvo=SimplificarArbln(fun);
     } else {
-        (*nvo)=fun;
+        nvo=fun;
     }
     //free(fun);
-    return *nvo;
+    return nvo;
 }
 
 NodoArb *SimplificarFun(NodoArb *fun){
     NodoArb* fun1, *fun2;
     fun1=fun;
-    for(int j=0; j<20; j++){
+    for(int j=0; j<10; j++){
         fun2=fun1;
         fun1=SimplificarArbolFuncion(fun2);
     }

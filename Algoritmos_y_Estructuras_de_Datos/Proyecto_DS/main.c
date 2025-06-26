@@ -7,7 +7,10 @@ void Menu();
 
 int main(){
     char* funcion;
+    int confirmacion=0;
     Menu();
+    printf("\n");
+    printf("\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
     printf("\n\nf(x)=");
     scanf("%[^\n]", funcion);
     if(!IsFuncionValida(funcion)){
@@ -15,6 +18,8 @@ int main(){
     } else {
         printf("\nf'(x)=");
         printf("%s", Derivar(funcion));
+        printf("\n\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+        printf("\n");
     }
     return 0;
 }
@@ -40,8 +45,8 @@ void Menu(){
     printf("\n   Ejemplo:  3^2, (x-3)^3, 8^(x-ln(x))");
     printf("\n\nF) Si desea escribir una raiz use un equivalente como exponente con '^': ");
     printf("\n   Equivalencias: Raiz cuadrado -> u^(1/2)");
-    printf("\n                 Raiz tercia   -> u^(1/3)");
-    printf("\n                 Raiz cuarta   -> u^(1/4)");
+    printf("\n                  Raiz tercia   -> u^(1/3)");
+    printf("\n                  Raiz cuarta   -> u^(1/4)");
     printf("\n   Ejemplo:  3^(1/2), (x^2+x)^(3/4), 8^(7/6)");
     printf("\n\nG) Si desea elevar una funcion ln o trigonometrica, use '^':");
     printf("\n   Ejemplo:  SI -> csc(x)^3");
