@@ -67,6 +67,7 @@
     "piladin.h": "c",
     "notainfpost.h": "c",
     "stdio.h": "c",
-    "cadesp.h": "c"
+    "cadesp.h": "c",
+    "complex": "c"
   }
 }

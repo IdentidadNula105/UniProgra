@@ -51,7 +51,7 @@ char* Convertir_Lista_Cadena(NodoL* expL){
     return expcad;
 }
 
-NodoL* PostFijo(char* exp){
+NodoL* pila_postfijo(char* exp){
     NodoL* pilop;
     NodoL* expfn;
     int copind_exp=0;
@@ -60,7 +60,7 @@ NodoL* PostFijo(char* exp){
     while(exp[ind_exp]){
         if(exp[ind_exp]=='('){
             ind_exp++;
-            expfn=ConcatenarListInvertida(expfn, PostFijo(exp));//Agrega los elementos de la expfn del () de forma invertida
+            expfn=ConcatenarListInvertida(expfn, pila_postfijo(exp));//Agrega los elementos de la expfn del () de forma invertida
         } else if(exp[ind_exp]==')'){
             break;
         } else if(!IsDigito(exp[ind_exp])){
@@ -76,7 +76,7 @@ NodoL* PostFijo(char* exp){
                 } else if(IsFuncion(exp, ind_exp)==3){
                     ind_exp=ind_exp+7;
                 }
-                expfn=ConcatenarListInvertida(expfn, PostFijo(exp));
+                expfn=ConcatenarListInvertida(expfn, pila_postfijo(exp));
                 while(exp[copind_exp]!='('){
                     expfn=CrearNodoL(expfn, &exp[copind_exp]);
                     copind_exp++;
@@ -108,22 +108,27 @@ NodoL* PostFijo(char* exp){
     return expfn;
 }
 
-char* Infija(char* exp){
+char* Postfijo(char* exp_infija){
+    char* res=Convertir_Lista_Cadena(pila_postfijo(exp_infija));
+    return res;
+}
+
+char* Infija(char* exp_postfija){
     NodoL* p1;
     Expifj* out, *el1, *el2;
     int tamt=0;
     int ind_expa=0;
     CrearPila(&p1);
-    while(exp[ind_expa]!='\0'){
-        if(exp[ind_expa]!=','){
+    while(exp_postfija[ind_expa]!='\0'){
+        if(exp_postfija[ind_expa]!=','){
             out=(Expifj*)malloc(sizeof(Expifj));
-            if(IsDigito(exp[ind_expa]) || exp[ind_expa]=='x'){
-                out->exp=CrearSubcadena(exp, &ind_expa);
+            if(IsDigito(exp_postfija[ind_expa]) || exp_postfija[ind_expa]=='x'){
+                out->exp=CrearSubcadena(exp_postfija, &ind_expa);
                 out->op='N';
-            } else if(IsFuncion(exp, ind_expa)){
+            } else if(IsFuncion(exp_postfija, ind_expa)){
                 el1=(Expifj*)Pop(&p1);//Argumento de la funcion
                 tamt=TamanoCadena(el1->exp, 0)+3;
-                if(IsFuncion(exp, ind_expa)==1){
+                if(IsFuncion(exp_postfija, ind_expa)==1){
                     tamt=tamt+2;
                     out->exp=(char*)malloc(tamt*sizeof(char));
                     out->exp[0]='l';
@@ -131,26 +136,26 @@ char* Infija(char* exp){
                     out->exp[2]='(';
                     for(int i=3, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
                     ind_expa=ind_expa+1;
-                } else if(IsFuncion(exp, ind_expa)==2){
+                } else if(IsFuncion(exp_postfija, ind_expa)==2){
                     //Trigonometrica
                     tamt=tamt+3;
                     out->exp=(char*)malloc(tamt*sizeof(char));
-                    out->exp[0]=exp[ind_expa];
-                    out->exp[1]=exp[ind_expa+1];
-                    out->exp[2]=exp[ind_expa+2];
+                    out->exp[0]=exp_postfija[ind_expa];
+                    out->exp[1]=exp_postfija[ind_expa+1];
+                    out->exp[2]=exp_postfija[ind_expa+2];
                     out->exp[3]='(';
                     for(int i=4, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
                     ind_expa=ind_expa+2;
-                } else if(IsFuncion(exp, ind_expa)==3){
+                } else if(IsFuncion(exp_postfija, ind_expa)==3){
                     //arc trigonometrica
                     tamt=tamt+6;
                     out->exp=(char*)malloc(tamt*sizeof(char));
-                    out->exp[0]=exp[ind_expa];
-                    out->exp[1]=exp[ind_expa+1];
-                    out->exp[2]=exp[ind_expa+2];
-                    out->exp[3]=exp[ind_expa+3];
-                    out->exp[4]=exp[ind_expa+4];
-                    out->exp[5]=exp[ind_expa+5];
+                    out->exp[0]=exp_postfija[ind_expa];
+                    out->exp[1]=exp_postfija[ind_expa+1];
+                    out->exp[2]=exp_postfija[ind_expa+2];
+                    out->exp[3]=exp_postfija[ind_expa+3];
+                    out->exp[4]=exp_postfija[ind_expa+4];
+                    out->exp[5]=exp_postfija[ind_expa+5];
                     out->exp[6]='(';
                     for(int i=7, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
                     ind_expa=ind_expa+5;
@@ -163,48 +168,49 @@ char* Infija(char* exp){
                 el2=(Expifj*)Pop(&p1);//Operando derecho
                 el1=(Expifj*)Pop(&p1);//Operando izquierdo
                 tamt=TamanoCadena(el1->exp, 0)+TamanoCadena(el2->exp, 0)+2;
-                if((CompararOp(el1->op, exp[ind_expa])==1 && CompararOp(el2->op, exp[ind_expa])==-1) || (exp[ind_expa]=='-' && (el2->op=='+' || el2->op=='-')) || (exp[ind_expa]=='/' && el1->op=='N' && el2->op!='N')){
+                if((CompararOp(el1->op, exp_postfija[ind_expa])==1 && CompararOp(el2->op, exp_postfija[ind_expa])==-1) || (exp_postfija[ind_expa]=='-' && (el2->op=='+' || el2->op=='-')) || (exp_postfija[ind_expa]=='/' && el1->op=='N' && el2->op!='N')){
                     //Cuando el operador de entrada es mayor que el de ele2 o sean iguales a '-'
                     out->exp=(char*)malloc((tamt+2)*sizeof(char));
                     for(int i=0; el1->exp[i]!='\0'; i++) out->exp[i]=el1->exp[i];
-                    out->exp[TamanoCadena(el1->exp, 0)]=exp[ind_expa];
+                    out->exp[TamanoCadena(el1->exp, 0)]=exp_postfija[ind_expa];
                     out->exp[TamanoCadena(el1->exp, 0)+1]='(';
                     for(int i=TamanoCadena(el1->exp, 0)+2, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
                     out->exp[tamt]=')';
                     out->exp[tamt+1]='\0';
-                } else if((CompararOp(el1->op, exp[ind_expa])==-1 && CompararOp(el2->op, exp[ind_expa])==-1) || (exp[ind_expa]=='/' && el1->op!='N' && el2->op!='N')){
+                } else if((CompararOp(el1->op, exp_postfija[ind_expa])==-1 && CompararOp(el2->op, exp_postfija[ind_expa])==-1) || (exp_postfija[ind_expa]=='/' && el1->op!='N' && el2->op!='N')){
                     //Los operadores de el1 y el2 son menores al de la entrada
                     out->exp=(char*)malloc((tamt+4)*sizeof(char));
                     out->exp[0]='(';
                     for(int i=1, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
                     out->exp[TamanoCadena(el1->exp, 0)+1]=')';
-                    out->exp[TamanoCadena(el1->exp, 0)+2]=exp[ind_expa];
+                    out->exp[TamanoCadena(el1->exp, 0)+2]=exp_postfija[ind_expa];
                     out->exp[TamanoCadena(el1->exp, 0)+3]='(';
                     for(int i=TamanoCadena(el1->exp, 0)+4, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
                     out->exp[tamt+2]=')';
                     out->exp[tamt+3]='\0';
-                } else if((CompararOp(el1->op, exp[ind_expa])==1 && CompararOp(el2->op, exp[ind_expa])==1) || (exp[ind_expa]=='/' && el1->op=='N' && el2->op=='N')){
+                } else if((CompararOp(el1->op, exp_postfija[ind_expa])==1 && CompararOp(el2->op, exp_postfija[ind_expa])==1) || (exp_postfija[ind_expa]=='/' && el1->op=='N' && el2->op=='N')){
                     //Cuando el1 y el2 son numeros o funciones (trigo, log, arc)
                     out->exp=(char*)malloc(tamt*sizeof(char));
                     for(int i=0; el1->exp[i]!='\0'; i++) out->exp[i]=el1->exp[i];
-                    out->exp[TamanoCadena(el1->exp, 0)]=exp[ind_expa];
+                    out->exp[TamanoCadena(el1->exp, 0)]=exp_postfija[ind_expa];
                     for(int i=TamanoCadena(el1->exp, 0)+1, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
                     out->exp[tamt-1]='\0';
-                } else if((CompararOp(el1->op, exp[ind_expa])==-1 && CompararOp(el2->op, exp[ind_expa])==1) || (exp[ind_expa]=='/' && el1->op!='N' && el2->op=='N')){
+                } else if((CompararOp(el1->op, exp_postfija[ind_expa])==-1 && CompararOp(el2->op, exp_postfija[ind_expa])==1) || (exp_postfija[ind_expa]=='/' && el1->op!='N' && el2->op=='N')){
                     //Cuando el operador de entrada es mas grande que el del el1
                     out->exp=(char*)malloc((tamt+2)*sizeof(char));
                     out->exp[0]='(';
                     for(int i=1, j=0; el1->exp[j]!='\0'; i++, j++) out->exp[i]=el1->exp[j];
                     out->exp[TamanoCadena(el1->exp, 0)+1]=')';
-                    out->exp[TamanoCadena(el1->exp, 0)+2]=exp[ind_expa];
+                    out->exp[TamanoCadena(el1->exp, 0)+2]=exp_postfija[ind_expa];
                     for(int i=TamanoCadena(el1->exp, 0)+3, j=0; el2->exp[j]!='\0'; i++, j++) out->exp[i]=el2->exp[j];
                     out->exp[tamt+1]='\0';
                 }
-                out->op=exp[ind_expa];
+                out->op=exp_postfija[ind_expa];
             }
             p1=Push(&p1, out);
         }
         ind_expa++;
     }
+
     return ((Expifj*)p1->dato)->exp;
 }

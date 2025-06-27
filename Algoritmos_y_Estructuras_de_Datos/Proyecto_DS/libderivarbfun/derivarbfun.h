@@ -4,7 +4,7 @@
 typedef struct nodoArbol NodoArb;
 typedef struct nodoL NodoL;
 
-NodoArb* ConstruirArbolFuncion(char* s);
+NodoArb* ConstruirArbolFuncion(char* exp_postfija);
 
 NodoArb* DerivArb_x(NodoArb* fun);
 

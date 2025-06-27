@@ -12,8 +12,10 @@ void ConvCad(NodoL* exp, char* rec, int tam);
 
 char* Convertir_Lista_Cadena(NodoL* expL);
 
-NodoL* PostFijo(char* exp);
+NodoL* pila_postfijo(char* exp);
 
-char* Infija(char* exp);
+char* Postfijo(char* exp_infija);
+
+char* Infija(char* exp_postfija);
 
 #endif

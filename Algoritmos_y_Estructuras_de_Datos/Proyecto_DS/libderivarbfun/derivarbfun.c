@@ -18,27 +18,27 @@ como subarbol izquierdo, siendo el derecho NULL.
 #define funizqizqdato ((char*)fun->izq->izq->dato)
 #define funizqderdato ((char*)fun->izq->der->dato)
 
-NodoArb* ConstruirArbolFuncion(char* s){
+NodoArb* ConstruirArbolFuncion(char* exp_postfija){
     int indice_exp=0;
     NodoArb *izq, *der, *nvo;
     NodoL* pila;
     CrearPila(&pila);
-    while(s[indice_exp]){
-        if(s[indice_exp]!=','){
-            nvo=CrearNodoArb(NULL, NULL, CrearSubcadena(s, &indice_exp));
-            if(s[indice_exp]=='+' || s[indice_exp]=='-' || s[indice_exp]=='*' || s[indice_exp]=='/' || s[indice_exp]=='^'){
+    while(exp_postfija[indice_exp]){
+        if(exp_postfija[indice_exp]!=','){
+            nvo=CrearNodoArb(NULL, NULL, CrearSubcadena(exp_postfija, &indice_exp));
+            if(exp_postfija[indice_exp]=='+' || exp_postfija[indice_exp]=='-' || exp_postfija[indice_exp]=='*' || exp_postfija[indice_exp]=='/' || exp_postfija[indice_exp]=='^'){
                 der=(NodoArb*)Pop(&pila);
                 izq=(NodoArb*)Pop(&pila);
                 nvo->der=der;
                 nvo->izq=izq;
-            } else if(IsFuncion(s, indice_exp)){
+            } else if(IsFuncion(exp_postfija, indice_exp)){
                 izq=(NodoArb*)Pop(&pila);
                 nvo->izq=izq;
-                if(IsFuncion(s, indice_exp)==1){
+                if(IsFuncion(exp_postfija, indice_exp)==1){
                     indice_exp++;
-                } else if(IsFuncion(s, indice_exp)==2){
+                } else if(IsFuncion(exp_postfija, indice_exp)==2){
                     indice_exp=indice_exp+2;
-                } else if(IsFuncion(s, indice_exp)==3){
+                } else if(IsFuncion(exp_postfija, indice_exp)==3){
                     indice_exp=indice_exp+5;
                 }
             }
@@ -315,20 +315,20 @@ void Convertir_Arbol_Lista(NodoArb* arb, NodoL** p){
 }
 
 char *Derivar(char *funcionx){
-    char*exp1, *res;
-    NodoArb* exp2, *exp3;
-    NodoL* p;
-    CrearPila(&p);
+    char*funcion_derivada;
+    NodoArb* arbolfuncion;
+    NodoL* lista;
+    CrearPila(&lista);
     
     //Se convierte a notación postfija y después se construye el árbol
-    exp1=Convertir_Lista_Cadena(PostFijo(funcionx));
-    exp2=SimplificarFun(ConstruirArbolFuncion(exp1));
+    
+    arbolfuncion=SimplificarFun(ConstruirArbolFuncion(Postfijo(funcionx)));
 
     //Se construye el árbol derivado, se simplifica y se convierte a cadena en notación infija
-    //Convertir_Arbol_Lista(SimplificarFun((exp2)), &p);
-    //Convertir_Arbol_Lista(DerivarArbolFuncion(exp2), &p);
-    Convertir_Arbol_Lista(SimplificarFun(DerivarArbolFuncion(exp2)), &p);
+    //Convertir_Arbol_Lista(SimplificarFun(arbolfuncion), &lista);
+    //Convertir_Arbol_Lista(DerivarArbolFuncion(arbolfuncion), &lista);
+    Convertir_Arbol_Lista(SimplificarFun(DerivarArbolFuncion(arbolfuncion)), &lista);
     
-    res=Convertir_Lista_Cadena(p);
-    return Infija(res);
+    funcion_derivada=Convertir_Lista_Cadena(lista);
+    return Infija(funcion_derivada);
 }
